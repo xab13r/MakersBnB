@@ -1,5 +1,10 @@
 require 'sinatra/base'
 require 'sinatra/reloader'
+require 'bcrypt'
+require_relative 'lib/database_connection'
+
+ENV['ENV'] = 'test'
+DatabaseConnection.connect
 
 class Application < Sinatra::Base
   # This allows the app code to refresh
