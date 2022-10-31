@@ -49,4 +49,27 @@ describe UserRepository do
       expect(all_users.last.password).to eq '$2a$12$I7cIVdo4bVtL7r8Tgq0tr.ywyHZQsXZ1ZUI2MxpkZHCueKC5CAGSe'
     end
   end
+  
+  describe "#create" do
+    it "add a user to the database" do
+      user = User.new
+      user.name = 'user 5'
+      user.email = 'email_5@email.com'
+      user.password = 'strong password'
+      
+      repo = UserRepository.new
+      original_size = repo.all.length
+      
+      repo.create(user)
+      
+      expect(repo.all.length).to eq original_size + 1
+      expect(repo.all).to include(
+        have_attributes(
+          name: 'user 5',
+          email: 'email_5@email.com',
+          password: 'strong password'
+        )
+      )
+    end
+  end
 end
