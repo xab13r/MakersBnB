@@ -18,14 +18,23 @@ class UserRepository
 
     result_set.map { |record| user_from_record(record) }
   end
-  
+
+  def find_by_id(id)
+    sql_query = 'SELECT * FROM users WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    user = result_set.map { |record| user_from_record(record) }
+
+    return false if user.empty?
+
+    user[0]
+  end
+
   def create(user)
     sql_query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);'
     sql_params = [user.name, user.email, user.password]
-    
-    new_record_id = DatabaseConnection.exec_params(sql_query, sql_params)
-    
-    return new_record_id
-  end
 
+    DatabaseConnection.exec_params(sql_query, sql_params)
+  end
 end
