@@ -12,6 +12,9 @@ class Application < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
+<<<<<<< HEAD
+end
+=======
 
   get '/sign_up' do
     return erb(:sign_up)
@@ -33,3 +36,4 @@ class Application < Sinatra::Base
     return erb(:login)
   end
 end
+>>>>>>> main

@@ -6,8 +6,7 @@
 | Record                | Properties          |
 | --------------------- | ------------------  |
 | users                 | email, password
-| spaces                | name, description, price per night
-| dates                 | date
+| spaces                | name, description, price per night, start date, end date
 
 `users` 
 
@@ -15,12 +14,7 @@
 
 `spaces` 
 
-    Column names: `name`, `description`, `price_night`
-
-`dates` 
-
-    Column names: `date`
-
+    Column names: `name`, `description`, `price_night`, `start-date`, `end_date`
 
 ## 3. Column types.
 
@@ -35,28 +29,27 @@ id: SERIAL
 name: text
 description: text
 price_night: float
-
-Table: dates
-id: SERIAL
-date: date
+start_date: date
+end_date: date
 ```
 
 ## 5. Design the Join Table
 
 ```
-Join table for tables: spaces and dates
-Join table name: spaces_dates
-Columns: space_id, date_id, user_id, status
+Join table for tables: users and spaces
+Join table name: users_spaces
+Columns: user_id, space_id, date, status
 ```
 
 ## 4. Write the SQL.
 
 ```sql
--- file: space_date.sql
+-- file: users_spaces.sql
 
 -- Users table
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
+  name text,
   email text,
   password text
 );
@@ -66,25 +59,21 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name text,
   description text,
-  price_night float
-);
-
--- Dates table
-CREATE TABLE dates (
-  id SERIAL PRIMARY KEY,
-  date date,
+  price_night float,
+  start_date date,
+  end_date date,
+  constraint fk_user foreign key(user_id) reference users(id) on delete cascade
 );
 
 -- Create the join table.
-CREATE TABLE spaces_dates (
-  space_id int,
-  date_id int,
+CREATE TABLE users_spaces (
   user_id int,
-  status text,
-  constraint fk_space foreign key(space_id) references spaces(id) on delete cascade,
-  constraint fk_date foreign key(date_id) references dates(id) on delete cascade,
+  space_id int,
   constraint fk_user foreign key(user_id) references users(id) on delete cascade,
-  PRIMARY KEY (space_id, date_id)
+  constraint fk_space foreign key(space_id) references spaces(id) on delete cascade,
+  PRIMARY KEY (user_id, space_id)
+  date date,
+  status text
 );
 
 ```
@@ -92,6 +81,6 @@ CREATE TABLE spaces_dates (
 ## 5. Create the tables.
 
 ```bash
-psql -h 127.0.0.1 makersbnb_test < spec/spaces_dates.sql
-psql -h 127.0.0.1 makersbnb_production < spec/spaces_dates.sql
+psql -h 127.0.0.1 makersbnb_test < spec/users_spaces.sql
+psql -h 127.0.0.1 makersbnb_production < spec/users_spaces.sql
 ```
