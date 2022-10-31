@@ -10,9 +10,9 @@ class DatabaseConnection
   # the database name given in argument.
   def self.connect
     database_name = if ENV['ENV'] == 'test'
-                      'chitter_development' # TODO: Change database
+                      'makersbnb_test'
                     else
-                      'chitter_production' # TODO: Change database
+                      'makersbnb_production'
                     end
     @connection = PG.connect({ host: '127.0.0.1', dbname: database_name })
   end
