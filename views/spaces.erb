@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MakersBnB</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="skeleton.css">
+  <link rel="stylesheet" href="normalize.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <img  src="/logo.png" style="display:block;margin-left:auto; margin-right: auto;">
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns"  style="text-align: center;">
+        <% if session[:user_id] == nil %>
+        <a class="button button-primary" href="#">Signup</a>
+        <a class="button button-primary" href="#">Login</a>
+        <% else %>
+        <a class="button button-primary" href="#">Dashboard</a>
+        <a class="button button-primary" href="#">Logout</a>
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns" style="text-align: center">
+        <h1>Spaces</h1>
+        
+        <table class="u-full-width">
+          
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price per Night</th>
+              <th>Book</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @spaces.each do |space| %>
+            <tr>
+              <td><%= space.name%></td>
+              <td><%= space.description%></td>
+              <td>£<%= space.price_night.round(0)%></td>
+              <td><a href="">Book</a></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

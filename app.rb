@@ -58,6 +58,12 @@ end
     return erb(:dashboard)
     end
   end
+  
+  get '/spaces' do
+    repo = SpaceRepository.new
+    @spaces = repo.all
+    return erb(:spaces)
+  end
 
   get '/list_spaces' do
     return erb(:list_spaces)

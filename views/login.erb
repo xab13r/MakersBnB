@@ -1,11 +1,42 @@
-<h1> login test </h1>
-
-<form method="POST" action="/login" >
-
-<label> Password </label> <input type="text" name="password"> <br>
-<label> Email </label> <input type="text" name="email"> <br>
-
-
-<input type="submit" value="log in" />
-
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MakersBnB</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="skeleton.css">
+  <link rel="stylesheet" href="normalize.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <img  src="/logo.png" style="display:block;margin-left:auto; margin-right: auto;">
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns"  style="text-align: center;">
+        <a class="button button-primary" href="#">Browse</a>
+        <a class="button button-primary" href="#">Signup</a>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns" style="text-align: center">
+        <h1>Login</h1>
+        
+        <form method="POST" action="/login">
+        
+        <label>Email</label>
+        <input type="text" name="email">
+        
+        <label>Password</label>
+        <input type="text" name="password">
+        <br>
+        <input type="submit" value="log in" style="margin: 15px"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
