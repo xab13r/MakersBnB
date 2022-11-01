@@ -69,6 +69,20 @@ describe UserRepository do
     end
   end
 
+  describe "#find_by_name" do
+    it "returns a User object given its username" do
+      repo = UserRepository.new
+      name_to_find = 'user 1'
+      
+      users = repo.find_by_name(name_to_find)
+      
+      expect(users[0].id).to eq 1
+      expect(users[0].name).to eq 'user 1'
+      expect(users[0].email).to eq 'email_1@email.com'
+    end
+  end
+
+
   describe '#create' do
     it 'add a user to the database' do
       user = User.new

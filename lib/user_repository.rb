@@ -31,6 +31,21 @@ class UserRepository
     user[0]
   end
 
+  def find_by_name(name)
+    sql_query = 'SELECT * FROM users WHERE name = $1;'
+    sql_params = [name]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+    
+    users = result_set.map { |record| user_from_record(record) }
+    
+    return false if users.empty?
+    
+    return users
+  end
+    
+  # TODO: Find by email
+  # TODO: Find by Space
+
   def create(user)
     sql_query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);'
     sql_params = [user.name, user.email, user.password]
