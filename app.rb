@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/reloader'
 require 'bcrypt'
+require 'date'
 require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
@@ -15,6 +16,10 @@ class Application < Sinatra::Base
     register Sinatra::Reloader
     also_reload 'lib/user_repository'
     enable :sessions
+  end
+
+  get '/' do
+    return erb(:home_page)
   end
 
   get '/sign_up' do
@@ -49,7 +54,8 @@ end
     user.password = params[:password]
     check_user = repo.find_by_email(user.email)
     if BCrypt::Password.new(check_user.password) == user.password
-    return erb(:logged_in)
+      session[:user_id] = check_user.id
+    return erb(:dashboard)
     end
   end
   
@@ -58,5 +64,24 @@ end
     @spaces = repo.all
     return erb(:spaces)
   end
+
+  get '/list_spaces' do
+    return erb(:list_spaces)
+  end
   
+  post '/list_spaces' do 
+    repo = SpaceRepository.new
+    space = Space.new
+    space.name = params[:name]
+    space.description = params[:description]
+    space.price_night = params[:price_night]
+    start_date = Date.parse(params[:start_date])
+    space.start_date = start_date
+    end_date = Date.parse(params[:end_date])
+    space.end_date = end_date
+    space.user_id = params[:user_id]
+    repo.create(space)
+    return erb(:space_created)
+  
+  end
 end
