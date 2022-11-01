@@ -10,7 +10,9 @@ INSERT INTO users (name, email, password) VALUES
 ('user 1', 'email_1@email.com', '$2a$12$7mfDByVKXH/lhYEyw0WXr.mLZ5QP5XsdmruSM/YCKiUav2IGpgr32'), -- 'strong password'
 ('user 2', 'email_2@email.com', '$2a$12$hUioakBqsrZba1ewCmc28uqEYkghNy8Mb37rl1baBEJWD3usufi4a'), -- 'strong password 1'
 ('user 3', 'email_3@email.com', '$2a$12$4U47Io6SqemEM6Z7dtDMaOEuMLvc4zZuF.vN/x3leVAxl6/38a2Le'), -- 'strong password 2'
-('user 4', 'email_4@email.com', '$2a$12$I7cIVdo4bVtL7r8Tgq0tr.ywyHZQsXZ1ZUI2MxpkZHCueKC5CAGSe'); -- 'strong password 3'
+('user 4', 'email_4@email.com', '$2a$12$I7cIVdo4bVtL7r8Tgq0tr.ywyHZQsXZ1ZUI2MxpkZHCueKC5CAGSe'), -- 'strong password 3'
+('user 5', 'email_5@email.com', '$2a$12$I7cIVdo4bVtL7r8Tgq0tr.ywyHZQsXZ1ZUI2MxpkZHCueKC5CAGSe'), -- 'strong password 3'
+('user 5', 'email_6@email.com', '$2a$12$I7cIVdo4bVtL7r8Tgq0tr.ywyHZQsXZ1ZUI2MxpkZHCueKC5CAGSe'); -- 'strong password 3'
 
 INSERT INTO spaces (name, description, price_night, start_date, end_date, user_id) VALUES
 ('fancy space', 'this is a fancy space', 100.0, '2022-11-01', '2022-12-01', 1),

@@ -42,8 +42,20 @@ class UserRepository
     
     return users
   end
+  
+  def find_by_email(email)
+    sql_query = 'SELECT * FROM users WHERE email = $1;'
+    sql_params = [email]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)   
     
-  # TODO: Find by email
+    user = result_set.map { |record| user_from_record(record) }
+    
+    return false if user.empty?
+    
+    return user[0]
+    
+  end
+  
   # TODO: Find by Space
 
   def create(user)
