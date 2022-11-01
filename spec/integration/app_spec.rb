@@ -19,7 +19,7 @@ describe Application do
         it 'shows the sign up page' do
             response = get('/sign_up')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> signup test </h1>')
+            expect(response.body).to include('<h1>Sign Up</h1>')
         end
     end
 
@@ -44,7 +44,7 @@ describe Application do
         it 'shows the login page' do
             response = get('/login')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> login test </h1>')
+            expect(response.body).to include('<h1>Login</h1>')
         end
     end
 
@@ -65,10 +65,10 @@ describe Application do
     end
 
     context 'GET /list_space' do
-        xit 'shows the list_space' do
+        xit 'shows the all listed spaces' do
             response = get('/list_space')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> List Space </h1>')
+            expect(response.body).to include('<h1>Spaces</h1>')
         end
     end
 
@@ -85,6 +85,38 @@ describe Application do
             response = get('/request_space')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1> Request Space </h1>')
+        end
+    end
+    
+    context 'GET /spaces' do
+        it 'shows all the spaces listed' do
+            response = get('/spaces')
+            expect(response.status).to eq 200
+            expect(response.body).to include('<tr>
+              <td>fancy space</td>
+              <td>this is a fancy space</td>
+              <td>£100</td>
+              <td><a href="">Book</a></td>
+            </tr>')
+        end
+        
+        it 'offers a signup and login button if user is not logged in' do
+            response = get('/spaces')
+            expect(response.status).to eq 200
+            expect(response.body).to include('<a class="button button-primary" href="#">Signup</a>')
+            expect(response.body).to include('<a class="button button-primary" href="#">Login</a>')
+        end
+        
+        it 'offers a dashboard and logout button if user is logged in' do
+            login = post(
+                '/login',
+                email: 'email_1@email.com',
+                password: 'strong password'
+            )
+            
+            response = get('/spaces')
+            expect(response.body).to include('<a class="button button-primary" href="#">Dashboard</a>')
+            expect(response.body).to include('<a class="button button-primary" href="#">Logout</a>')
         end
     end
 end

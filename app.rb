@@ -3,6 +3,7 @@ require 'sinatra/reloader'
 require 'bcrypt'
 require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
+require_relative 'lib/space_repository'
 
 ENV['ENV'] = 'test'
 DatabaseConnection.connect
@@ -51,4 +52,11 @@ end
     return erb(:logged_in)
     end
   end
+  
+  get '/spaces' do
+    repo = SpaceRepository.new
+    @spaces = repo.all
+    return erb(:spaces)
+  end
+  
 end
