@@ -40,6 +40,7 @@ end
   get '/login' do
     return erb(:login)
   end
+<<<<<<< HEAD
 
   post '/login' do
     repo = UserRepository.new
@@ -55,3 +56,6 @@ end
   
 
 end
+=======
+end
+>>>>>>> main
