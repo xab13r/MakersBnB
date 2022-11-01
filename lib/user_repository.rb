@@ -1,5 +1,5 @@
-require 'database_connection'
-require 'user'
+require_relative 'database_connection'
+require_relative 'user'
 
 class UserRepository
   def user_from_record(record)
