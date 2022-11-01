@@ -125,6 +125,19 @@ describe UserRepository do
   end
 
 
+  describe "#find_by_space" do
+    it "returns an array of User objects given a space id" do
+      repo = UserRepository.new
+      space_id = 2
+      
+      users = repo.find_by_space(space_id)
+      
+      expect(users.length).to eq 2
+      expect(users.first.id).to eq 3
+      expect(users.last.id).to eq 4
+    end
+  end
+
   describe '#create' do
     it 'add a user to the database' do
       user = User.new

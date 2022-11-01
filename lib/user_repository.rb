@@ -56,7 +56,20 @@ class UserRepository
     
   end
   
-  # TODO: Find by Space
+  def find_by_space(space_id)
+    sql_query = 'SELECT users.id, users.name, users.email, users.password FROM users
+    JOIN users_spaces ON users_spaces.user_id = users.id
+    JOIN spaces ON users_spaces.space_id = spaces.id
+    WHERE spaces.id = $1;'
+    sql_params = [space_id]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    user = result_set.map { |record| user_from_record(record) }
+    
+    return false if user.empty?
+    
+    return user  
+  end
 
   def create(user)
     sql_query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);'
