@@ -1,5 +1,5 @@
-require 'database_connection'
-require 'user'
+require_relative 'database_connection'
+require_relative 'user'
 
 class UserRepository
   def user_from_record(record)
@@ -29,6 +29,45 @@ class UserRepository
     return false if user.empty?
 
     user[0]
+  end
+
+  def find_by_name(name)
+    sql_query = 'SELECT * FROM users WHERE name = $1;'
+    sql_params = [name]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    users = result_set.map { |record| user_from_record(record) }
+
+    return false if users.empty?
+
+    users
+  end
+
+  def find_by_email(email)
+    sql_query = 'SELECT * FROM users WHERE email = $1;'
+    sql_params = [email]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    user = result_set.map { |record| user_from_record(record) }
+
+    return false if user.empty?
+
+    user[0]
+  end
+
+  def find_by_space(space_id)
+    sql_query = 'SELECT users.id, users.name, users.email, users.password FROM users
+    JOIN users_spaces ON users_spaces.user_id = users.id
+    JOIN spaces ON users_spaces.space_id = spaces.id
+    WHERE spaces.id = $1;'
+    sql_params = [space_id]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    user = result_set.map { |record| user_from_record(record) }
+
+    return false if user.empty?
+
+    user
   end
 
   def create(user)
