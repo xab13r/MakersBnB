@@ -88,6 +88,8 @@ describe Application do
             response = get('/request_space')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1> Request Space </h1>')
+        end
+    end
 
   context 'POST /list_spaces' do
         it 'adds a new listing to the database with the users id' do
