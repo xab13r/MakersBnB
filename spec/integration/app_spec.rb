@@ -7,11 +7,13 @@ describe Application do
     include Rack::Test::Methods
     let(:app) { Application.new }
 
-    context 'GET /home' do
-        xit 'shows the home page' do
-            response = get('/home')
+    context 'GET /' do
+        it 'shows the home page' do
+            response = get('/')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Home Page </h1>')
+            expect(response.body).to include('<h1> Makers BnB Homepage </h1>')
+            expect(response.body).to include('<a href="/sign_up"> Register</a>')
+            expect(response.body).to include('<a href="/login"> Log in</a>')
         end
     end
 
@@ -36,7 +38,7 @@ describe Application do
         it 'fails if the email already exists on the database' do
             response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'password1')
             expect(response.status).to eq 200
-            expect(response.body).to eq '<h1> Email already in use! </h1>'
+            expect(response.body).to include('<h1> Email already in use! </h1>')
         end    
     end
 
@@ -52,39 +54,23 @@ describe Application do
         it 'Logs the user in' do
             response = post('/login', email: 'email_4@email.com', password: 'strong password 3')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> User logged in! </h1>')
+            expect(response.body).to include('<h1> User Dashboard </h1>')
         end
     end
 
-    context 'GET /dashboard' do
-        xit 'shows the dashboard' do
-            response = get('/dashboard')
+    context 'GET /list_spaces' do
+        it 'shows the list space page' do
+            response = get('/list_spaces')
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Dashboard </h1>')
+            expect(response.body).to include('<h1> List a Space </h1>')
         end
     end
 
-    context 'GET /list_space' do
-        xit 'shows the list_space' do
-            response = get('/list_space')
+    context 'POST /list_spaces' do
+        it 'adds a new listing to the database with the users id' do
+            response = post('/list_spaces', name: 'test1', description: 'test1', price_night: 20.00, start_date: '01-02-2022', end_date: '02-02-2022', user_id: 1)
             expect(response.status).to eq 200
-            expect(response.body).to include('<h1> List Space </h1>')
-        end
-    end
-
-    context 'GET /request_space' do
-        xit 'shows the request_space' do
-            response = get('/request_space')
-            expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Request Space </h1>')
-        end
-    end
-
-    context 'GET /request_space' do
-        xit 'shows the request_space' do
-            response = get('/request_space')
-            expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Request Space </h1>')
+            expect(response.body).to include('<h1> Space Created! </h1>')
         end
     end
 end
