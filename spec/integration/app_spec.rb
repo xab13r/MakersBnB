@@ -2,6 +2,7 @@ require "spec_helper"
 require "rack/test"
 require_relative "../../app"
 
+
 describe Application do
     include Rack::Test::Methods
     let(:app) { Application.new }
@@ -23,12 +24,21 @@ describe Application do
     end
 
     context 'POST /sign_up' do
-        xit 'creates a new data entry into the database' do
-            response = post('/sign_up', email_address: 'testemail1@msn.com', password: 'password1')
+        it 'creates a new data entry into the database' do
+            response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'dan1')
             expect(response.status).to eq 200
-            expect(response.body).to include("Your account has been created")
-            
+            repo = UserRepository.new
+            user = repo.find_by_id(6)
+            expect(user.id).to eq 6
+            expect(user.name).to eq 'test1'
+            expect(user.email).to eq 'testemail1@hotmail.com'
         end
+
+        it 'fails if the email already exists on the database' do
+            response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'password1')
+            expect(response.status).to eq 200
+            expect(response.body).to eq '<h1> Email already in use! </h1>'
+        end    
     end
 
     context 'GET /login' do
@@ -36,6 +46,14 @@ describe Application do
             response = get('/login')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1> login test </h1>')
+        end
+    end
+
+    context 'POST /login' do
+        it 'Logs the user in' do
+            response = post('/login', email: 'email_4@email.com', password: 'strong password 3')
+            expect(response.status).to eq 200
+            expect(response.body).to include('<h1> User logged in! </h1>')
         end
     end
 

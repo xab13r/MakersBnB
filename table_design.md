@@ -55,15 +55,18 @@ CREATE TABLE users (
 );
 
 -- Spaces table
-CREATE TABLE users (
+CREATE TABLE spaces (
   id SERIAL PRIMARY KEY,
   name text,
   description text,
   price_night float,
   start_date date,
   end_date date,
-  constraint fk_user foreign key(user_id) reference users(id) on delete cascade
+  user_id int,
+  constraint fk_user foreign key(user_id) references users(id) on delete cascade
 );
+
+# changed name of table to spaces and added user id to table ^^
 
 -- Create the join table.
 CREATE TABLE users_spaces (
@@ -71,7 +74,7 @@ CREATE TABLE users_spaces (
   space_id int,
   constraint fk_user foreign key(user_id) references users(id) on delete cascade,
   constraint fk_space foreign key(space_id) references spaces(id) on delete cascade,
-  PRIMARY KEY (user_id, space_id)
+  PRIMARY KEY (user_id, space_id),
   date date,
   status text
 );
