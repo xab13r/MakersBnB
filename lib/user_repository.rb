@@ -35,27 +35,26 @@ class UserRepository
     sql_query = 'SELECT * FROM users WHERE name = $1;'
     sql_params = [name]
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
-    
+
     users = result_set.map { |record| user_from_record(record) }
-    
+
     return false if users.empty?
-    
-    return users
+
+    users
   end
-  
+
   def find_by_email(email)
     sql_query = 'SELECT * FROM users WHERE email = $1;'
     sql_params = [email]
-    result_set = DatabaseConnection.exec_params(sql_query, sql_params)   
-    
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
     user = result_set.map { |record| user_from_record(record) }
-    
+
     return false if user.empty?
-    
-    return user[0]
-    
+
+    user[0]
   end
-  
+
   def find_by_space(space_id)
     sql_query = 'SELECT users.id, users.name, users.email, users.password FROM users
     JOIN users_spaces ON users_spaces.user_id = users.id
@@ -65,10 +64,10 @@ class UserRepository
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
 
     user = result_set.map { |record| user_from_record(record) }
-    
+
     return false if user.empty?
-    
-    return user  
+
+    user
   end
 
   def create(user)
