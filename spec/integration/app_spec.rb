@@ -28,8 +28,7 @@ describe Application do
             response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'dan1')
             expect(response.status).to eq 200
             repo = UserRepository.new
-            user = repo.find_by_id(6)
-            expect(user.id).to eq 6
+            user = repo.find_by_email('testemail1@hotmail.com')
             expect(user.name).to eq 'test1'
             expect(user.email).to eq 'testemail1@hotmail.com'
         end
