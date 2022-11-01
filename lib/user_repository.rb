@@ -1,5 +1,5 @@
-require 'database_connection'
-require 'user'
+require_relative 'database_connection'
+require_relative 'user'
 
 class UserRepository
   def user_from_record(record)
@@ -22,6 +22,18 @@ class UserRepository
   def find_by_id(id)
     sql_query = 'SELECT * FROM users WHERE id = $1;'
     sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    user = result_set.map { |record| user_from_record(record) }
+
+    return false if user.empty?
+
+    user[0]
+  end
+
+  def find_by_email(email)
+    sql_query = 'SELECT * FROM users WHERE email = $1;'
+    sql_params = [email]
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
 
     user = result_set.map { |record| user_from_record(record) }

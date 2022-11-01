@@ -61,7 +61,20 @@ describe UserRepository do
       expect(user.email).to eq 'email_2@email.com'
       expect(user.password).to eq '$2a$12$hUioakBqsrZba1ewCmc28uqEYkghNy8Mb37rl1baBEJWD3usufi4a'
     end
-
+#########added in find_by email for login/sign-up validation##############
+    describe '#find_by_email' do
+      it 'returns a User object given its email' do
+        repo = UserRepository.new
+        email_to_find = 'email_2@email.com'
+        user = repo.find_by_email(email_to_find)
+  
+        expect(user.id).to eq 2
+        expect(user.name).to eq 'user 2'
+        expect(user.email).to eq 'email_2@email.com'
+        expect(user.password).to eq '$2a$12$hUioakBqsrZba1ewCmc28uqEYkghNy8Mb37rl1baBEJWD3usufi4a'
+      end
+    end
+##############################################################
     it 'returns false if there is no match' do
       repo = UserRepository.new
       id_to_find = 200
