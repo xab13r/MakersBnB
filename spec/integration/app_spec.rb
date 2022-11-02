@@ -113,7 +113,7 @@ describe Application do
               <td>fancy space</td>
               <td>this is a fancy space</td>
               <td>£100</td>
-              <td><a href="">Book</a></td>
+              <td><a href="/spaces/1">Book</a></td>
             </tr>')
         end
         

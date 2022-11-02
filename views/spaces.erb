@@ -46,7 +46,7 @@
               <td><%= space.name%></td>
               <td><%= space.description%></td>
               <td>£<%= space.price_night.round(0)%></td>
-              <td><a href="">Book</a></td>
+              <td><a href="/spaces/<%= space.id%>">Book</a></td>
             </tr>
             <% end %>
           </tbody>
