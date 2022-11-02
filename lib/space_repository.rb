@@ -72,7 +72,7 @@ class SpaceRepository
     spaces = result_set.map { |record| space_from_record(record) }
 
     return false if spaces.empty?
-    
+
     spaces
   end
 

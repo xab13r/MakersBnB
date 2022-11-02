@@ -158,15 +158,15 @@ describe UserRepository do
         )
       )
     end
-    
-    it "email is not unique, it will raise an error" do
+
+    it 'email is not unique, it will raise an error' do
       user = User.new
       user.name = 'user 5'
       user.email = 'email_1@email.com'
       user.password = 'strong password'
-      
-      repo = UserRepository.new      
-      expect { repo.create(user) }.to raise_error("Email address already in use")
+
+      repo = UserRepository.new
+      expect { repo.create(user) }.to raise_error('Email address already in use')
     end
   end
 end

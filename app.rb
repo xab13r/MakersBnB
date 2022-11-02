@@ -31,22 +31,22 @@ class Application < Sinatra::Base
   get '/signup' do
     return erb(:signup)
   end
- 
-  post '/signup' do 
+
+  post '/signup' do
     repo = UserRepository.new
     utilities = Utilities.new
-    
+
     name = params[:name]
     email = params[:email]
     password = BCrypt::Password.create(params[:password])
-    
+
     if utilities.validate_name(name) && utilities.validate_email(email)
-      
+
       new_user = User.new
       new_user.name = name
       new_user.email = email
       new_user.password = password
-    
+
       begin
         repo.create(new_user)
         return erb(:account_created)
@@ -74,9 +74,9 @@ class Application < Sinatra::Base
     password = params[:password]
     utils = Utilities.new
     repo = UserRepository.new
-    
+
     user = repo.find_by_email(params[:email])
-    
+
     if utils.validate_email(email) && !password.nil? && user != false
       # TODO: Add tests for difference conditions
       if BCrypt::Password.new(user.password) == password
@@ -91,7 +91,7 @@ class Application < Sinatra::Base
       return erb(:login)
     end
   end
-  
+
   get '/spaces' do
     repo = SpaceRepository.new
     @spaces = repo.all
@@ -101,8 +101,8 @@ class Application < Sinatra::Base
   get '/list_spaces' do
     return erb(:list_spaces)
   end
-  
-  post '/list_spaces' do 
+
+  post '/list_spaces' do
     repo = SpaceRepository.new
     space = Space.new
     space.name = params[:name]
@@ -115,9 +115,8 @@ class Application < Sinatra::Base
     space.user_id = params[:user_id]
     repo.create(space)
     return erb(:space_created)
-  
   end
-  
+
   get '/spaces/:id' do
     if session[:user_id].nil?
       return redirect(:login)
@@ -128,7 +127,7 @@ class Application < Sinatra::Base
       return erb(:space_page)
     end
   end
-  
+
   get '/dashboard' do
     if session[:user_id].nil?
       return redirect('/login')
@@ -139,11 +138,11 @@ class Application < Sinatra::Base
       @user = user_repo.find_by_id(user_id)
       @spaces = space_repo.find_listed_by_user(user_id)
       @bookings = space_repo.find_booked_by_user(user_id)
-      
+
       return erb(:dashboard)
     end
   end
-  
+
   get '/logout' do
     if session[:user_id]
       session[:user_id] = nil
@@ -152,7 +151,7 @@ class Application < Sinatra::Base
       return redirect('/')
     end
   end
- 
+
   post '/spaces/:id' do
     @space_id = params[:id]
     request_repo = RequestRepository.new
@@ -163,9 +162,10 @@ class Application < Sinatra::Base
     request.status = 'pending'
 
     if request_repo.validate_request(request) == true
-    request_repo.create(request)
-    return erb(:booking_confirmed)
-    else return erb(:booking_failed)
+      request_repo.create(request)
+      return erb(:booking_confirmed)
+    else
+      return erb(:booking_failed)
     end
   end
 end
