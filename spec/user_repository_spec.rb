@@ -138,10 +138,10 @@ describe UserRepository do
   end
 
   describe '#create' do
-    it 'add a user to the database' do
+    it 'if email is unique it adds a user to the database' do
       user = User.new
       user.name = 'user 5'
-      user.email = 'email_5@email.com'
+      user.email = 'new_email@email.com'
       user.password = 'strong password'
 
       repo = UserRepository.new
@@ -152,11 +152,21 @@ describe UserRepository do
       expect(repo.all.length).to eq original_size + 1
       expect(repo.all).to include(
         have_attributes(
+          email: 'new_email@email.com',
           name: 'user 5',
-          email: 'email_5@email.com',
           password: 'strong password'
         )
       )
+    end
+    
+    it "email is not unique, it will raise an error" do
+      user = User.new
+      user.name = 'user 5'
+      user.email = 'email_1@email.com'
+      user.password = 'strong password'
+      
+      repo = UserRepository.new      
+      expect { repo.create(user) }.to raise_error("Email address already in use")
     end
   end
 end

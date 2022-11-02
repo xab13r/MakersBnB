@@ -5,6 +5,7 @@ require 'date'
 require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
+require_relative 'lib/utilities'
 
 ENV['ENV'] = 'test'
 DatabaseConnection.connect
@@ -32,19 +33,31 @@ class Application < Sinatra::Base
  
   post '/signup' do 
     repo = UserRepository.new
-    user = User.new
-    user.name = params[:name]
-    user.email = params[:email]
-    user.password = BCrypt::Password.create(params[:password])
+    utilities = Utilities.new
     
-    if repo.find_by_email(user.email) == false
-      repo.create(user)
-      return erb(:account_creation)   
-    else
-    return erb(:email_invalid)
+    name = params[:name]
+    email = params[:email]
+    password = BCrypt::Password.create(params[:password])
+    
+    if utilities.validate_name(name) && utilities.validate_email(email)
       
+      new_user = User.new
+      new_user.name = name
+      new_user.email = email
+      new_user.password = password
+    
+      begin
+        repo.create(new_user)
+        return erb(:account_created)
+      rescue StandardError
+        @alert = 'Email address already in use'
+        return erb(:signup)
+      end
+    else
+      @alert = 'Please check your details'
+      return erb(:signup)
+    end
   end
-end
 
   get '/login' do
     if session[:user_id].nil?
@@ -55,11 +68,25 @@ end
   end
 
   post '/login' do
+    email = params[:email]
+    password = params[:password]
+    utils = Utilities.new
     repo = UserRepository.new
-    check_user = repo.find_by_email(params[:email])
-    if BCrypt::Password.new(check_user.password) == params[:password]
-      session[:user_id] = check_user.id
-    return redirect(:dashboard)
+    
+    user = repo.find_by_email(params[:email])
+    
+    if utils.validate_email(email) && !password.nil? && user != false
+      # TODO: Add tests for difference conditions
+      if BCrypt::Password.new(user.password) == password
+        session[:user_id] = user.id
+        return redirect(:dashboard)
+      else
+        @alert = 'Invalid email and/or password. Please try again.'
+        return erb(:login)
+      end
+    else
+      @alert = 'Invalid email and/or password. Please try again.'
+      return erb(:login)
     end
   end
   

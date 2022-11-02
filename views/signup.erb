@@ -24,7 +24,12 @@
     <div class="row">
       <div class="twelve columns" style="text-align: center">
         <h1>Sign Up</h1>
-        <form action="/sign_up" method="POST">
+        
+        <% if @alert %>
+        <p style="color: red"><%= @alert %></p>
+        <% end %>
+        
+        <form action="/signup" method="POST">
           
           <label>Name</label>
           <input type="text" name="name">

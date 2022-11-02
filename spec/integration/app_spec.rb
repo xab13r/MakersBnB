@@ -53,21 +53,51 @@ describe Application do
         end
     end
 
-    context 'POST /signup' do
-        it 'creates a new data entry into the database' do
-            response = post('/signup', name: 'test1', email: 'testemail1@hotmail.com', password: 'dan1')
-            expect(response.status).to eq 200
-            repo = UserRepository.new
-            user = repo.find_by_email('testemail1@hotmail.com')
-            expect(user.name).to eq 'test1'
-            expect(user.email).to eq 'testemail1@hotmail.com'
+    describe 'POST /signup' do
+        it 'creates a new user' do
+          response = post(
+            '/signup', 
+            name: 'new user', 
+            email: 'new_user@email.com', 
+            password: 'strong password'
+          )          
+          expect(response.status).to eq 200
+          expect(response.body).to include('Your account has been created')
         end
 
         it 'fails if the email already exists on the database' do
-            response = post('/signup', name: 'test1', email: 'email_1@email.com', password: 'password1')
-            expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Email already in use! </h1>')
-        end    
+          response = post(
+            '/signup', 
+            name: 'new user', 
+            email: 'email_1@email.com', 
+            password: 'password1'
+          )
+          expect(response.status).to eq 200
+          expect(response.body).to include('Email address already in use')
+        end
+        
+        it 'fails if the name includes invalid characters' do
+          response = post(
+            '/signup', 
+            name: 'new_:user', 
+            email: 'email_1@email.com', 
+            password: 'password1'
+          )
+          expect(response.status).to eq 200
+          expect(response.body).to include('Please check your details')
+        end
+        
+        it 'fails if the email includes invalid characters' do
+          response = post(
+            '/signup', 
+            name: 'new user', 
+            email: 'email_email@@email.com', 
+            password: 'password1'
+          )
+          expect(response.status).to eq 200
+          expect(response.body).to include('Please check your details')
+        end
+        
     end
 
     describe 'GET /login' do
@@ -97,14 +127,24 @@ describe Application do
       end
     end
 
-    context 'POST /login' do
-        it 'Logs the user in' do
+    describe 'POST /login' do
+        it 'logs the user in' do
             response = post(
               '/login', 
               email: 'email_1@email.com', 
               password: 'strong password')
             expect(response.status).to eq 302
             expect(response.location).to match(/\/dashboard$/)
+        end
+        
+        it "reloads if login details are incorrect" do
+          response = post(
+            '/login', 
+            email: 'email_1@email.com', 
+            password: 'stro_password')
+          
+          expect(response.status).to eq 200
+          expect(response.body).to include('Invalid email and/or password. Please try again.')
         end
     end
 

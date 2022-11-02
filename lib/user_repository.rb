@@ -71,9 +71,13 @@ class UserRepository
   end
 
   def create(user)
-    sql_query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);'
-    sql_params = [user.name, user.email, user.password]
-
-    DatabaseConnection.exec_params(sql_query, sql_params)
+    if find_by_email(user.email) == false
+      sql_query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3);'
+      sql_params = [user.name, user.email, user.password]
+  
+      DatabaseConnection.exec_params(sql_query, sql_params)
+    else
+      raise "Email address already in use"
+    end
   end
 end
