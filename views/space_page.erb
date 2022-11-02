@@ -43,6 +43,12 @@
             <tr>
               <td style="text-align:center"><%= @space.start_date.strftime("%b %-d, %Y") %></td>
               <td style="text-align:center"><%= @space.end_date.strftime("%b %-d, %Y") %></td>
+              <form action="/spaces/<%= @space.id %>" method="POST">
+              <label> Choose Date: </label>
+               <input type="date" name="date" min=<%= @space.start_date %> max=<%= @space.end_date %> />
+
+              <input type="submit" value="Book Space" style="margin: 15px"/>
+              </form>
             </tr>
           </tbody>
         </table>
