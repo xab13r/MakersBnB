@@ -19,7 +19,11 @@ class Application < Sinatra::Base
   end
 
   get '/' do
-    return erb(:index)
+    if session[:user_id].nil?
+      return erb(:index)
+    else
+      return redirect('/dashboard')
+    end
   end
 
   get '/signup' do
@@ -43,7 +47,11 @@ class Application < Sinatra::Base
 end
 
   get '/login' do
-    return erb(:login)
+    if session[:user_id].nil?
+      return erb(:login)
+    else
+      return redirect('/dashboard')
+    end
   end
 
   post '/login' do
@@ -104,6 +112,15 @@ end
       @bookings = space_repo.find_booked_by_user(user_id)
       
       return erb(:dashboard)
+    end
+  end
+  
+  get '/logout' do
+    if session[:user_id]
+      session[:user_id] = nil
+      return redirect('/')
+    else
+      return redirect('/')
     end
   end
   

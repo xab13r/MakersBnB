@@ -16,14 +16,31 @@ describe Application do
       reset_tables
     end
 
-    context 'GET /' do
-        it 'shows the home page' do
+    describe 'GET /' do
+      context "if the user is not logged in" do  
+        it 'signup, login, and browse buttons' do
             response = get('/')
             expect(response.status).to eq 200            
             expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
             expect(response.body).to include('<a class="button button-primary" href="/login">Login</a>')
             expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
         end
+      end
+      
+      context "if the user is logged in" do
+        it "redirects to the dashboard" do
+          login = post(
+            '/login',
+            email: 'email_1@email.com',
+            password: 'strong password'
+          )
+          
+          response = get('/')
+
+          expect(response.status).to eq 302
+          expect(response.location).to match(/\/dashboard$/)
+        end
+      end
     end
 
     context 'GET /signup' do
@@ -53,7 +70,8 @@ describe Application do
         end    
     end
 
-    context 'GET /login' do
+    describe 'GET /login' do
+      context "if the user is not logged in" do
         it 'shows the login page' do
             response = get('/login')
             expect(response.status).to eq 200
@@ -61,6 +79,22 @@ describe Application do
             expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
             expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
         end
+      end
+      
+      context "if the user is already logged in" do
+        it "redirects to the dashboard" do
+          login = post(
+            '/login',
+            email: 'email_1@email.com',
+            password: 'strong password'
+          )
+          
+          response = get('/login')
+          
+          expect(response.status).to eq 302
+          expect(response.location).to match(/\/dashboard$/)
+        end
+      end
     end
 
     context 'POST /login' do
@@ -203,6 +237,25 @@ describe Application do
         expect(response.body).to include('<td>this is a fancy space</td>')
         expect(response.body).to include('<td>spartan space</td>')
       end
+    end
+  end
+  
+  describe 'GET /logout' do
+    xit 'logs the user out' do
+      login = get(
+        '/login',
+        email: 'email_1@email.com',
+        password: 'strong password'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
+      
+      response get('/logout')
+      
+      expect(get('dashboard').status).to eq 302
+      expect(get('dashboard').location).to match(/\/login$/)  
     end
   end
 end
