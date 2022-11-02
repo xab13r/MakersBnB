@@ -26,8 +26,7 @@ class Application < Sinatra::Base
     return erb(:signup)
   end
  
-
-  post '/sign_up' do 
+  post '/signup' do 
     repo = UserRepository.new
     user = User.new
     user.name = params[:name]
@@ -35,7 +34,7 @@ class Application < Sinatra::Base
     user.password = BCrypt::Password.create(params[:password])
     
     if repo.find_by_email(user.email) == false
-    repo.create(user)
+      repo.create(user)
       return erb(:account_creation)   
     else
     return erb(:email_invalid)
@@ -49,13 +48,10 @@ end
 
   post '/login' do
     repo = UserRepository.new
-    user = User.new
-    user.email = params[:email]
-    user.password = params[:password]
-    check_user = repo.find_by_email(user.email)
-    if BCrypt::Password.new(check_user.password) == user.password
+    check_user = repo.find_by_email(params[:email])
+    if BCrypt::Password.new(check_user.password) == params[:password]
       session[:user_id] = check_user.id
-    return erb(:dashboard)
+    return redirect(:dashboard)
     end
   end
   
@@ -86,13 +82,28 @@ end
   end
   
   get '/spaces/:id' do
-    if session[:user_id] == nil
+    if session[:user_id].nil?
       return redirect(:login)
     else
       space_id = params[:id]
       space_repo = SpaceRepository.new
       @space = space_repo.find_by_id(space_id)
       return erb(:space_page)
+    end
+  end
+  
+  get '/dashboard' do
+    if session[:user_id].nil?
+      return redirect('/login')
+    else
+      user_id = session[:user_id]
+      user_repo = UserRepository.new
+      space_repo = SpaceRepository.new
+      @user = user_repo.find_by_id(user_id)
+      @spaces = space_repo.find_listed_by_user(user_id)
+      @bookings = space_repo.find_booked_by_user(user_id)
+      
+      return erb(:dashboard)
     end
   end
   

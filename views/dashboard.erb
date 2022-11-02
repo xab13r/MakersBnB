@@ -1,7 +1,75 @@
-<h1> User Dashboard </h1>
-
-<a href="/list_spaces"> List Space</a>
-
-<a href="/request_space"> Request Space</a>
-
-<a href="/approve_space"> Approve Space</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MakersBnB</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="skeleton.css">
+  <link rel="stylesheet" href="normalize.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <img  src="/logo.png" style="display:block;margin-left:auto; margin-right: auto;">
+    </div>
+    
+    <div class="row">
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns" style="text-align: center">
+        
+        <h1>Welcome, <%= @user.name %></h1>
+        
+        <h2>Your Bookings</h2>
+        
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Booked Date</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @bookings.each do |booking| %>
+            <tr>
+              <td><%= booking.name%></td>
+              <td><%= booking.description%></td>
+              <td><%= booking.booked_date %></td>
+              <td><a href="/spaces/<%= booking.id%>">View space</a></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        
+        <h2>Your Listings</h2>
+        
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price per Night</th>
+              <th>Book</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @spaces.each do |space| %>
+            <tr>
+              <td><%= space.name%></td>
+              <td><%= space.description%></td>
+              <td>£<%= space.price_night.round(0)%></td>
+              <td><a href="/spaces/<%= space.id%>">Book</a></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        
+      </div>
+    </div>
+  </div>
+</body>
+</html>

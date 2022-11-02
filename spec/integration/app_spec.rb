@@ -23,8 +23,6 @@ describe Application do
             expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
             expect(response.body).to include('<a class="button button-primary" href="/login">Login</a>')
             expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
-            
-            
         end
     end
 
@@ -38,9 +36,9 @@ describe Application do
         end
     end
 
-    context 'POST /sign_up' do
+    context 'POST /signup' do
         it 'creates a new data entry into the database' do
-            response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'dan1')
+            response = post('/signup', name: 'test1', email: 'testemail1@hotmail.com', password: 'dan1')
             expect(response.status).to eq 200
             repo = UserRepository.new
             user = repo.find_by_email('testemail1@hotmail.com')
@@ -49,7 +47,7 @@ describe Application do
         end
 
         it 'fails if the email already exists on the database' do
-            response = post('/sign_up', name: 'test1', email: 'email_1@email.com', password: 'password1')
+            response = post('/signup', name: 'test1', email: 'email_1@email.com', password: 'password1')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1> Email already in use! </h1>')
         end    
@@ -67,9 +65,12 @@ describe Application do
 
     context 'POST /login' do
         it 'Logs the user in' do
-            response = post('/login', email: 'email_4@email.com', password: 'strong password 3')
-            expect(response.status).to eq 200
-            expect(response.body).to include('<h1> User Dashboard </h1>')
+            response = post(
+              '/login', 
+              email: 'email_1@email.com', 
+              password: 'strong password')
+            expect(response.status).to eq 302
+            expect(response.location).to match(/\/dashboard$/)
         end
     end
 
@@ -169,11 +170,39 @@ describe Application do
     context 'if the user is not logged in' do
       it 'redirects to the login page' do
         response = get('/spaces/1')
-         
+        
+        expect(response.status).to eq 302
+        expect(response.location).to match(/\/login$/)
+      end
+    end
+  end
+  
+  describe "GET /dashboard" do
+    context "if the user is not logged in" do
+      it "redirects to the login page" do
+        response = get('/dashboard')
         expect(response.status).to eq 302
         expect(response.location).to match(/\/login$/)
       end
     end
     
-  end 
+    context "if the user is logged in" do
+      it "returns the dashboard page" do
+        login = post(
+          '/login',
+          email: 'email_1@email.com',
+          password: 'strong password'
+        )
+
+        response = get('/dashboard')
+        expect(response.status).to eq 200
+        expect(response.body).to include("Welcome, user 1")
+        expect(response.body).to include('        <td>not so fancy space</td>')
+        expect(response.body).to include('        <td>this is a not so fancy space</td>')
+                  
+        expect(response.body).to include('<td>this is a fancy space</td>')
+        expect(response.body).to include('<td>spartan space</td>')
+      end
+    end
+  end
 end
