@@ -11,7 +11,7 @@ describe Application do
         it 'shows the home page' do
             response = get('/')
             expect(response.status).to eq 200            
-            expect(response.body).to include('<a class="button button-primary" href="/sign_up">Signup</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
             expect(response.body).to include('<a class="button button-primary" href="/login">Login</a>')
             expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
             
@@ -19,11 +19,13 @@ describe Application do
         end
     end
 
-    context 'GET /sign_up' do
+    context 'GET /signup' do
         it 'shows the sign up page' do
-            response = get('/sign_up')
+            response = get('/signup')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1>Sign Up</h1>')
+            expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
+            expect(response.body).to include('<a class="button button-primary" href="login">Login</a>')
         end
     end
 
