@@ -13,6 +13,7 @@ class SpaceRepository
     space.end_date = Date.parse(record['end_date'])
     space.user_id = record['user_id'].to_i
     space.booked_date = record['date']
+    space.status = record['status']
     space
   end
 
@@ -61,7 +62,7 @@ class SpaceRepository
   end
 
   def find_booked_by_user(user_id)
-    sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date FROM spaces
+    sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date, users_spaces.status FROM spaces
    JOIN users_spaces ON users_spaces.space_id = spaces.id
    JOIN users ON users_spaces.user_id = users.id
    WHERE users.id = $1;'

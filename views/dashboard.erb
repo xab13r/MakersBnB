@@ -22,7 +22,7 @@
         
         <h1>Welcome, <%= @user.name %></h1>
         
-        <h2>Your Bookings</h2>
+        <h2>Your Trips</h2>
         
         <table class="u-full-width">
           <thead>
@@ -30,6 +30,7 @@
               <th>Name</th>
               <th>Description</th>
               <th>Booked Date</th>
+              <th>Status</th>
               <th>View</th>
             </tr>
           </thead>
@@ -39,6 +40,7 @@
               <td><%= booking.name%></td>
               <td><%= booking.description%></td>
               <td><%= booking.booked_date %></td>
+              <td><%= booking.status.capitalize %></td>
               <td><a href="/spaces/<%= booking.id%>">View space</a></td>
             </tr>
             <% end %>
