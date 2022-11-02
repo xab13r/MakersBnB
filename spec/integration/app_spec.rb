@@ -181,7 +181,7 @@ describe Application do
         end
     end
 
-  context 'POST /list_spaces' do
+    context 'POST /list_spaces' do
         it 'adds a new listing to the database with the users id' do
             response = post('/list_spaces', name: 'test1', description: 'test1', price_night: 20.00, start_date: '01-02-2022', end_date: '02-02-2022', user_id: 1)
             expect(response.status).to eq 200
@@ -220,6 +220,7 @@ describe Application do
             expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
         end
     end
+    
     
   describe 'GET /spaces/id' do
     context 'if the user is logged in' do
@@ -260,6 +261,7 @@ describe Application do
       end
     end
     
+
     context "if the user is logged in" do
       it "returns the dashboard page" do
         login = post(
@@ -299,3 +301,20 @@ describe Application do
     end
   end
 end
+
+  end 
+
+  describe 'POST /spaces/id' do
+    it 'returns a confirmation page after adding requesting a space' do
+        login = post(
+            '/login',
+            email: 'email_1@email.com',
+            password: 'strong password'
+          )
+
+        response = post('/spaces/1', user_id: 1, space_id: 1, date: '01-02-2022', status: 'pending')
+        expect(response.status).to eq 200
+        end
+    end
+end
+
