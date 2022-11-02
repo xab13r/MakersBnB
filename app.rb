@@ -5,6 +5,7 @@ require 'date'
 require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
+require_relative 'lib/request_repository'
 
 ENV['ENV'] = 'test'
 DatabaseConnection.connect
@@ -95,5 +96,20 @@ end
       return erb(:space_page)
     end
   end
-  
+
+  post '/spaces/:id' do
+    @space_id = params[:id]
+    request_repo = RequestRepository.new
+    request = Request.new
+    request.user_id = session[:user_id]
+    request.space_id = @space_id
+    request.date = params[:date]
+    request.status = 'pending'
+
+    if request_repo.validate_request(request) == true
+    request_repo.create(request)
+    return erb(:booking_confirmed)
+    else return erb(:booking_failed)
+    end
+  end
 end
