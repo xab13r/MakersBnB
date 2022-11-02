@@ -5,6 +5,7 @@ require 'date'
 require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
+require_relative 'lib/utilities'
 require_relative 'lib/request_repository'
 
 ENV['ENV'] = 'test'
@@ -20,43 +21,74 @@ class Application < Sinatra::Base
   end
 
   get '/' do
-    return erb(:index)
+    if session[:user_id].nil?
+      return erb(:index)
+    else
+      return redirect('/dashboard')
+    end
   end
 
   get '/signup' do
     return erb(:signup)
   end
  
-
-  post '/sign_up' do 
+  post '/signup' do 
     repo = UserRepository.new
-    user = User.new
-    user.name = params[:name]
-    user.email = params[:email]
-    user.password = BCrypt::Password.create(params[:password])
+    utilities = Utilities.new
     
-    if repo.find_by_email(user.email) == false
-    repo.create(user)
-      return erb(:account_creation)   
-    else
-    return erb(:email_invalid)
+    name = params[:name]
+    email = params[:email]
+    password = BCrypt::Password.create(params[:password])
+    
+    if utilities.validate_name(name) && utilities.validate_email(email)
       
+      new_user = User.new
+      new_user.name = name
+      new_user.email = email
+      new_user.password = password
+    
+      begin
+        repo.create(new_user)
+        return erb(:account_created)
+        # TODO: Style account created
+      rescue StandardError
+        @alert = 'Email address already in use'
+        return erb(:signup)
+      end
+    else
+      @alert = 'Please check your details'
+      return erb(:signup)
+    end
   end
-end
 
   get '/login' do
-    return erb(:login)
+    if session[:user_id].nil?
+      return erb(:login)
+    else
+      return redirect('/dashboard')
+    end
   end
 
   post '/login' do
+    email = params[:email]
+    password = params[:password]
+    utils = Utilities.new
     repo = UserRepository.new
-    user = User.new
-    user.email = params[:email]
-    user.password = params[:password]
-    check_user = repo.find_by_email(user.email)
-    if BCrypt::Password.new(check_user.password) == user.password
-      session[:user_id] = check_user.id
-    return erb(:dashboard)
+    
+    user = repo.find_by_email(params[:email])
+    
+    if utils.validate_email(email) && !password.nil? && user != false
+      # TODO: Add tests for difference conditions
+      if BCrypt::Password.new(user.password) == password
+        session[:user_id] = user.id
+        return redirect(:dashboard)
+      else
+        @alert = 'Invalid email and/or password. Please try again.'
+        return erb(:login)
+      end
+    else
+      @alert = 'Invalid email and/or password. Please try again.'
+      return erb(:login)
     end
   end
   
@@ -87,7 +119,7 @@ end
   end
   
   get '/spaces/:id' do
-    if session[:user_id] == nil
+    if session[:user_id].nil?
       return redirect(:login)
     else
       space_id = params[:id]
@@ -96,7 +128,31 @@ end
       return erb(:space_page)
     end
   end
-
+  
+  get '/dashboard' do
+    if session[:user_id].nil?
+      return redirect('/login')
+    else
+      user_id = session[:user_id]
+      user_repo = UserRepository.new
+      space_repo = SpaceRepository.new
+      @user = user_repo.find_by_id(user_id)
+      @spaces = space_repo.find_listed_by_user(user_id)
+      @bookings = space_repo.find_booked_by_user(user_id)
+      
+      return erb(:dashboard)
+    end
+  end
+  
+  get '/logout' do
+    if session[:user_id]
+      session[:user_id] = nil
+      return redirect('/')
+    else
+      return redirect('/')
+    end
+  end
+ 
   post '/spaces/:id' do
     @space_id = params[:id]
     request_repo = RequestRepository.new

@@ -16,7 +16,7 @@
     
     <div class="row">
       <div class="twelve columns"  style="text-align: center;">
-        <% if session[:user_id] == nil %>
+        <% if session[:user_id].nil? %>
         <a class="button button-primary" href="/signup">Signup</a>
         <a class="button button-primary" href="/login">Login</a>
         <% else %>
