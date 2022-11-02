@@ -17,11 +17,11 @@
     <div class="row">
       <div class="twelve columns"  style="text-align: center;">
         <% if session[:user_id] == nil %>
-        <a class="button button-primary" href="#">Signup</a>
-        <a class="button button-primary" href="#">Login</a>
+        <a class="button button-primary" href="/signup">Signup</a>
+        <a class="button button-primary" href="/login">Login</a>
         <% else %>
-        <a class="button button-primary" href="#">Dashboard</a>
-        <a class="button button-primary" href="#">Logout</a>
+        <a class="button button-primary" href="/dashboard">Dashboard</a>
+        <a class="button button-primary" href="/logout">Logout</a>
         <% end %>
       </div>
     </div>

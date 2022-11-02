@@ -19,11 +19,11 @@ class Application < Sinatra::Base
   end
 
   get '/' do
-    return erb(:home_page)
+    return erb(:index)
   end
 
-  get '/sign_up' do
-    return erb(:sign_up)
+  get '/signup' do
+    return erb(:signup)
   end
  
 
