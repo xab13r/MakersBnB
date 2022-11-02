@@ -49,6 +49,7 @@ class Application < Sinatra::Base
       begin
         repo.create(new_user)
         return erb(:account_created)
+        # TODO: Style account created
       rescue StandardError
         @alert = 'Email address already in use'
         return erb(:signup)
