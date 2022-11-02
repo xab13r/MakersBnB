@@ -51,6 +51,8 @@ describe Application do
             response = get('/login')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1>Login</h1>')
+            expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
         end
     end
 
@@ -118,8 +120,8 @@ describe Application do
         it 'offers a signup and login button if user is not logged in' do
             response = get('/spaces')
             expect(response.status).to eq 200
-            expect(response.body).to include('<a class="button button-primary" href="#">Signup</a>')
-            expect(response.body).to include('<a class="button button-primary" href="#">Login</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/signup">Signup</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/login">Login</a>')
         end
         
         it 'offers a dashboard and logout button if user is logged in' do
@@ -130,8 +132,8 @@ describe Application do
             )
             
             response = get('/spaces')
-            expect(response.body).to include('<a class="button button-primary" href="#">Dashboard</a>')
-            expect(response.body).to include('<a class="button button-primary" href="#">Logout</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
         end
     end
 end
