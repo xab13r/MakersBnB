@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="" />
-  <link rel="stylesheet" href="skeleton.css">
-  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="/skeleton.css">
+  <link rel="stylesheet" href="/normalize.css">
 </head>
 <body>
   <div class="container">
@@ -28,29 +28,25 @@
     
     <div class="row">
       <div class="twelve columns" style="text-align: center">
-        <h1>Spaces</h1>
+        <h1><%= @space.name.capitalize %></h1>
+        <h5><%= @space.description %></h5>
+        <p>£<%= @space.price_night.round(0) %>/night</p>
         
         <table class="u-full-width">
-          
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price per Night</th>
-              <th>Book</th>
+              <th style="text-align:center">Available From</th>
+              <th style="text-align:center">Available Until</th>
             </tr>
           </thead>
           <tbody>
-            <% @spaces.each do |space| %>
             <tr>
-              <td><%= space.name%></td>
-              <td><%= space.description%></td>
-              <td>£<%= space.price_night.round(0)%></td>
-              <td><a href="/spaces/<%= space.id%>">Book</a></td>
+              <td style="text-align:center"><%= @space.start_date.strftime("%b %-d, %Y") %></td>
+              <td style="text-align:center"><%= @space.end_date.strftime("%b %-d, %Y") %></td>
             </tr>
-            <% end %>
           </tbody>
         </table>
+        
       </div>
     </div>
   </div>

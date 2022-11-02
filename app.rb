@@ -84,4 +84,16 @@ end
     return erb(:space_created)
   
   end
+  
+  get '/spaces/:id' do
+    if session[:user_id] == nil
+      return redirect(:login)
+    else
+      space_id = params[:id]
+      space_repo = SpaceRepository.new
+      @space = space_repo.find_by_id(space_id)
+      return erb(:space_page)
+    end
+  end
+  
 end

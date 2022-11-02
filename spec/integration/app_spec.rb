@@ -2,10 +2,19 @@ require "spec_helper"
 require "rack/test"
 require_relative "../../app"
 
+def reset_tables
+  seed_sql = File.read('spec/seeds.sql')
+  connection = PG.connect({ host: '127.0.0.1', dbname: 'makersbnb_test' })
+  connection.exec(seed_sql)
+end
 
 describe Application do
     include Rack::Test::Methods
     let(:app) { Application.new }
+    
+    before(:each) do
+      reset_tables
+    end
 
     context 'GET /' do
         it 'shows the home page' do
@@ -40,7 +49,7 @@ describe Application do
         end
 
         it 'fails if the email already exists on the database' do
-            response = post('/sign_up', name: 'test1', email: 'testemail1@hotmail.com', password: 'password1')
+            response = post('/sign_up', name: 'test1', email: 'email_1@email.com', password: 'password1')
             expect(response.status).to eq 200
             expect(response.body).to include('<h1> Email already in use! </h1>')
         end    
@@ -113,7 +122,7 @@ describe Application do
               <td>fancy space</td>
               <td>this is a fancy space</td>
               <td>£100</td>
-              <td><a href="">Book</a></td>
+              <td><a href="/spaces/1">Book</a></td>
             </tr>')
         end
         
@@ -136,4 +145,35 @@ describe Application do
             expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
         end
     end
+    
+  describe 'GET /spaces/id' do
+    context 'if the user is logged in' do
+      it 'returns a page with details about a space' do
+        login = post(
+          '/login',
+          email: 'email_1@email.com',
+          password: 'strong password'
+        )
+        
+        space_id = 3
+        repo = SpaceRepository.new
+        space = repo.find_by_id(space_id)
+        
+        response = get("/spaces/#{space_id}")
+        
+        expect(response.status).to eq 200
+        expect(response.body).to include(space.name)
+      end
+    end
+    
+    context 'if the user is not logged in' do
+      it 'redirects to the login page' do
+        response = get('/spaces/1')
+         
+        expect(response.status).to eq 302
+        expect(response.location).to match(/\/login$/)
+      end
+    end
+    
+  end 
 end
