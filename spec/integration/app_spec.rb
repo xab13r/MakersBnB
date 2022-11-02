@@ -10,10 +10,12 @@ describe Application do
     context 'GET /' do
         it 'shows the home page' do
             response = get('/')
-            expect(response.status).to eq 200
-            expect(response.body).to include('<h1> Makers BnB Homepage </h1>')
-            expect(response.body).to include('<a href="/sign_up"> Register</a>')
-            expect(response.body).to include('<a href="/login"> Log in</a>')
+            expect(response.status).to eq 200            
+            expect(response.body).to include('<a class="button button-primary" href="/sign_up">Signup</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/login">Login</a>')
+            expect(response.body).to include('<a class="button button-primary" href="/spaces">Browse</a>')
+            
+            
         end
     end
 
