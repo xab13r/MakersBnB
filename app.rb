@@ -84,4 +84,12 @@ end
     return erb(:space_created)
   
   end
+  
+  get '/spaces/:id' do
+    space_id = params[:id]
+    space_repo = SpaceRepository.new
+    @space = space_repo.find_by_id(space_id)
+    return erb(:space_page)
+  end
+  
 end

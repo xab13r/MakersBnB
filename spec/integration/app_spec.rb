@@ -136,4 +136,18 @@ describe Application do
             expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
         end
     end
+    
+  describe 'GET /spaces/id' do
+    it 'returns a page with details about a space' do
+      space_id = 3
+      repo = SpaceRepository.new
+      space = repo.find_by_id(space_id)
+      
+      response = get("/spaces/#{space_id}")
+      
+      expect(response.status).to eq 200
+      expect(response.body).to include(space.name)
+      
+    end
+  end 
 end
