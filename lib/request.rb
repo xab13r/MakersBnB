@@ -1,3 +1,3 @@
 class Request
-  attr_accessor :user_id, :space_id, :date, :status
+  attr_accessor :booked_by, :space_id, :date, :status
 end

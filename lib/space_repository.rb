@@ -14,6 +14,7 @@ class SpaceRepository
     space.user_id = record['user_id'].to_i
     space.booked_date = record['date']
     space.status = record['status']
+    space.booked_by = record['booked_by']
     space
   end
 
@@ -64,8 +65,22 @@ class SpaceRepository
   def find_booked_by_user(user_id)
     sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date, users_spaces.status FROM spaces
    JOIN users_spaces ON users_spaces.space_id = spaces.id
-   JOIN users ON users_spaces.user_id = users.id
+   JOIN users ON users_spaces.booked_by = users.id
    WHERE users.id = $1;'
+    sql_params = [user_id]
+    result_set = DatabaseConnection.exec_params(sql_query, sql_params)
+
+    spaces = result_set.map { |record| space_from_record(record) }
+
+    return false if spaces.empty?
+
+    spaces
+  end
+
+  def find_spaces_by_user(user_id)
+    sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date, users_spaces.status FROM spaces
+    JOIN users_spaces ON users_spaces.space_id = spaces.id
+    WHERE spaces.user_id = $1;'
     sql_params = [user_id]
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
 

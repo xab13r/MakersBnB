@@ -22,11 +22,11 @@ CREATE TABLE spaces (
 
 -- Create the join table.
 CREATE TABLE users_spaces (
-  user_id int,
+  booked_by int,
   space_id int,
-  constraint fk_user foreign key(user_id) references users(id) on delete cascade,
+  constraint fk_user foreign key(booked_by) references users(id) on delete cascade,
   constraint fk_space foreign key(space_id) references spaces(id) on delete cascade,
-  PRIMARY KEY (user_id, space_id),
+  PRIMARY KEY (booked_by, space_id),
   date date,
   status text
 );
