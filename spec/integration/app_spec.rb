@@ -403,6 +403,31 @@ describe Application do
   end
 
   describe 'POST /spaces/id' do
+    
+    it "doesn't allow a user to book a space for more than one night" do
+      login = post(
+        '/login',
+        email: 'email_2@email.com',
+        password: 'strong password 1'
+      )
+      
+      response = post(
+        '/spaces/3', 
+        date: '02-12-2022', 
+        status: 'pending'
+      )
+      
+      response = post(
+        '/spaces/3', 
+        date: '10-12-2022', 
+        status: 'pending'
+      )
+      
+      expect(response.status).to eq 200
+      expect(response.body).to include("You cannot book a space for more than one night")
+      
+    end
+    
     context "if booking is successful" do
       it 'returns a confirmation page' do
         login = post(

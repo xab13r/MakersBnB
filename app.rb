@@ -177,10 +177,15 @@ class Application < Sinatra::Base
     request.space_id = @space_id
     request.date = Date.parse(params[:date])
     request.status = 'pending'
-
+    
     if request_repo.validate_request(request) == true
-      request_repo.create(request)
-      return erb(:booking_confirmed)
+      begin
+        request_repo.create(request)
+        return erb(:booking_confirmed)
+      rescue StandardError
+        @alert = 'You cannot book a space for more than one night'
+        return erb(:space_page)
+      end
     else
       @alert = 'This space is not available on the selected date'
       return erb(:space_page)
