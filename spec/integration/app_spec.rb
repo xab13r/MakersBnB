@@ -276,9 +276,11 @@ describe Application do
 
         response = get('/dashboard')
         expect(response.status).to eq 200
+        expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
+        expect(response.body).to include('<a class="button button-primary" href="/add_space">Add a Space</a>')
         expect(response.body).to include('Welcome, user 1')
-        expect(response.body).to include('        <td>not so fancy space</td>')
-        expect(response.body).to include('        <td>this is a not so fancy space</td>')
+        expect(response.body).to include('<td>not so fancy space</td>')
+        expect(response.body).to include('<td>this is a not so fancy space</td>')
 
         expect(response.body).to include('<td>this is a fancy space</td>')
         expect(response.body).to include('<td>spartan space</td>')
@@ -340,6 +342,7 @@ describe Application do
         expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
     end
     
+    # TODO: This test needs to be implemented
     it "shows the new booking on the user dashboard" do
       login = post(
         '/login',

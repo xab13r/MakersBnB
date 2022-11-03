@@ -1,9 +1,56 @@
-<h1>List a Space</h1>
-<form action="/add_space" method = "POST">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MakersBnB</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="skeleton.css">
+  <link rel="stylesheet" href="normalize.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <img  src="/logo.png" style="display:block;margin-left:auto; margin-right: auto;">
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns"  style="text-align: center;">
+        <a class="button button-primary" href="/dashboard">Dashboard</a>
+        <a class="button button-primary" href="/spaces">Browse</a>
+        <a class="button button-primary" href="/logout">Logout</a>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="twelve columns" style="text-align: center">
+        <h1>List a Space</h1>
+        
+        <% if @alert %>
+        <p style="color: red"><%= @alert %></p>
+        <% end %>
+        
+        <form action="/add_space" method = "POST">
+          <label>Name</label>
+          <input type="text" name="name">
+          
+          <label>Description</label>
+          <input type="text" name="description">
+          
+          <label>Price per night</label>
+          <input type="text" name="price_night">
+          
+          <label>Start Date - End Date</label>
+          <input type="date" name="start_date">
+          <input type="date" name="end_date">
+          <br>
+          <br>
+          <input type="submit" value="Add a Space">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
 
-<label> Name </label> <input type="text" name="name"> <br>
-<label> Description </label> <input type="text" name="description"> <br>
-<label> Price per night </label> <input type="text" name="price_night"> <br>
-<label> Start Date: </label> <input type="date" name="start_date"> <br>
-<label> End Date: </label> <input type="date" name="end_date"> <br>
-<input type="submit" value="submit the form">
+
+
