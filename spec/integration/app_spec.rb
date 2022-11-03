@@ -422,7 +422,7 @@ describe Application do
       expect(dashboard.body).to include("Pending")
       end
     
-      xit 'shows the new booking on the host dashboard' do
+      it 'shows the new booking on the host dashboard' do
       
       end 
     end
