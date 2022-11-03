@@ -44,7 +44,17 @@
             <% @spaces.each do |space| %>
             <tr>
               <td><%= space.name%></td>
-              <td><%= space.description%></td>
+              
+              <% if space.description.length > 30 %>
+              
+              <td><%= space.description[0,30] + "..." %></td>
+              
+              <% else %>
+              
+              <td><%= space.description %></td>
+              
+              <% end %>
+              
               <td>£<%= space.price_night.round(0)%></td>
               <td><a href="/spaces/<%= space.id%>">Book</a></td>
             </tr>

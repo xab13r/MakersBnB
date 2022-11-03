@@ -30,3 +30,14 @@ CREATE TABLE users_spaces (
   date date,
   status text
 );
+
+-- Create the archive table
+CREATE TABLE archives (
+  booked_by int,
+  space_id int,
+  constraint fk_user foreign key(booked_by) references users(id) on delete cascade,
+  constraint fk_space foreign key(space_id) references spaces(id) on delete cascade,
+  PRIMARY KEY (booked_by, space_id),
+  date date,
+  status text
+);

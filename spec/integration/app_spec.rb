@@ -238,12 +238,16 @@ describe Application do
     it 'shows all the spaces listed' do
       response = get('/spaces')
       expect(response.status).to eq 200
-      expect(response.body).to include('<tr>
-              <td>fancy space</td>
-              <td>this is a fancy space</td>
-              <td>£100</td>
-              <td><a href="/spaces/1">Book</a></td>
-            </tr>')
+      expect(response.body).to include('<td>fancy space</td>')
+      expect(response.body).to include('<td>this is a fancy space</td>')
+      expect(response.body).to include('<td>£100</td>')
+      expect(response.body).to include('<td><a href="/spaces/1">Book</a></td>')
+    end
+
+    context "if the space description is too long" do
+      it "will be truncated with an ellipsis" do
+
+      end
     end
 
     it 'offers a signup and login button if user is not logged in' do

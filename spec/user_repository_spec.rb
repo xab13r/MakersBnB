@@ -131,9 +131,9 @@ describe UserRepository do
 
       users = repo.find_by_space(space_id)
 
-      expect(users.length).to eq 2
+      expect(users.length).to eq 3
       expect(users.first.id).to eq 3
-      expect(users.last.id).to eq 4
+      expect(users.last.id).to eq 1
     end
   end
 

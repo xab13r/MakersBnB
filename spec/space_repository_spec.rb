@@ -43,7 +43,7 @@ RSpec.describe SpaceRepository do
 
       all_spaces = repo.all
 
-      expect(all_spaces.length).to eq 5
+      expect(all_spaces.length).to eq 6
       expect(all_spaces.first.id).to eq 1
       expect(all_spaces.first.name).to eq 'fancy space'
       expect(all_spaces.first.description).to eq 'this is a fancy space'
@@ -52,7 +52,7 @@ RSpec.describe SpaceRepository do
       expect(all_spaces.first.end_date).to eq Date.new(2022, 12, 1)
       expect(all_spaces.first.user_id).to eq 1
 
-      expect(all_spaces.last.id).to eq 5
+      expect(all_spaces.last.id).to eq 6
       expect(all_spaces.last.name).to eq 'spartan space'
       expect(all_spaces.last.description).to eq 'this is a spartan space'
       expect(all_spaces.last.price_night).to eq 20.0
@@ -111,7 +111,7 @@ RSpec.describe SpaceRepository do
 
         expect(spaces.length).to eq 2
         expect(spaces.first.id).to eq 4
-        expect(spaces.last.id).to eq 5
+        expect(spaces.last.id).to eq 6
       end
     end
 
@@ -129,9 +129,9 @@ RSpec.describe SpaceRepository do
       user_id = 1
       spaces = repo.find_listed_by_user(user_id)
 
-      expect(spaces.length).to eq 2
+      expect(spaces.length).to eq 3
       expect(spaces.first.id).to eq 1
-      expect(spaces.last.id).to eq 4
+      expect(spaces.last.id).to eq 5
     end
 
     it 'returns false if there is no match' do
@@ -147,7 +147,7 @@ RSpec.describe SpaceRepository do
       user_id = 1
       spaces = repo.find_booked_by_user(user_id)
 
-      expect(spaces.length).to eq 2
+      expect(spaces.length).to eq 3
       expect(spaces.first.id).to eq 3
       expect(spaces.last.id).to eq 5
     end

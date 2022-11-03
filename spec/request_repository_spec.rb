@@ -17,13 +17,13 @@ RSpec.describe RequestRepository do
 
       all_requests = repo.all
 
-      expect(all_requests.length).to eq 5
+      expect(all_requests.length).to eq 6
       expect(all_requests.first.booked_by).to eq 1
       expect(all_requests.first.space_id).to eq 3
       expect(all_requests.first.date).to eq '2022-12-01'
       expect(all_requests.first.status).to eq 'booked'
 
-      expect(all_requests.length).to eq 5
+      expect(all_requests.length).to eq 6
       expect(all_requests.last.booked_by).to eq 1
       expect(all_requests.last.space_id).to eq 5
       expect(all_requests.last.date).to eq '2022-12-31'
@@ -35,7 +35,7 @@ RSpec.describe RequestRepository do
     it 'add a new space request to the database' do
       request = Request.new
       request.booked_by = 1
-      request.space_id = 2
+      request.space_id = 4
       request.date = '2022-11-10'
       request.status = 'pending'
 
@@ -48,7 +48,7 @@ RSpec.describe RequestRepository do
       expect(repo.all).to include(
         have_attributes(
           booked_by: 1,
-          space_id: 2,
+          space_id: 4,
           date: '2022-11-10',
           status: 'pending'
         )
@@ -79,6 +79,18 @@ RSpec.describe RequestRepository do
       repo = RequestRepository.new
 
       expect(repo.validate_request(request)).to eq false
+    end
+  end
+  
+  describe '#archive' do
+    it 'moves past bookings to the archives table' do
+      repo = RequestRepository.new
+      
+      original_number_of_records = repo.all.length
+      repo.archive
+      
+      expect(repo.all.length).to eq (original_number_of_records - 1)
+      
     end
   end
 end
