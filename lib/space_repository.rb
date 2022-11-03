@@ -78,9 +78,10 @@ class SpaceRepository
   end
 
   def find_spaces_by_user(user_id)
-    sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date, users_spaces.status FROM spaces
+    sql_query = 'SELECT spaces.id, spaces.name, spaces.description, spaces.price_night, spaces.start_date, spaces.end_date, spaces.user_id, users_spaces.date, users_spaces.status, users_spaces.booked_by FROM spaces
     JOIN users_spaces ON users_spaces.space_id = spaces.id
     WHERE spaces.user_id = $1;'
+    
     sql_params = [user_id]
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
 

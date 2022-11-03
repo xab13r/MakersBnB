@@ -28,7 +28,7 @@ INSERT INTO users_spaces (booked_by, space_id, date, status) VALUES
 (3, 2, '2022-11-10', 'pending'),
 (4, 2, '2022-11-10', 'pending'),
 (1, 2, '2022-11-01', 'booked'), -- record to be archived
-(1, 5, '2022-12-31', 'booked');
+(2, 5, '2022-12-31', 'booked');
 
 INSERT INTO archives (booked_by, space_id, date, status) VALUES
 (2, 3, '2022-10-15', 'archived'),

@@ -1,4 +1,5 @@
 require './lib/request_repository'
+require'./lib/space_repository'
 
 def reset_tables
   seed_sql = File.read('spec/seeds.sql')
@@ -24,7 +25,7 @@ RSpec.describe RequestRepository do
       expect(all_requests.first.status).to eq 'booked'
 
       expect(all_requests.length).to eq 6
-      expect(all_requests.last.booked_by).to eq 1
+      expect(all_requests.last.booked_by).to eq 2
       expect(all_requests.last.space_id).to eq 5
       expect(all_requests.last.date).to eq '2022-12-31'
       expect(all_requests.last.status).to eq 'booked'
@@ -82,15 +83,40 @@ RSpec.describe RequestRepository do
     end
   end
   
-  describe '#archive' do
-    it 'moves past bookings to the archives table' do
+  describe "#cancel_request" do
+    it "cancels a request" do
       repo = RequestRepository.new
+      request = Request.new
+      request.booked_by = 5
+      request.space_id = 2
+      request.date = '2022-11-10'
+      request.status = 'pending'
+
+      repo.create(request)
       
-      original_number_of_records = repo.all.length
-      repo.archive
+      repo.cancel_request(5, 2)
       
-      expect(repo.all.length).to eq (original_number_of_records - 1)
-      
+      expect(repo.all).to include(
+        have_attributes(
+          booked_by: 5,
+          space_id: 2,
+          date: '2022-11-10',
+          status: 'cancelled'          
+        )
+      )
     end
   end
+  
+  
+  #describe '#archive' do
+  #  it 'moves past bookings to the archives table' do
+  #    repo = RequestRepository.new
+  #    
+  #    original_number_of_records = repo.all.length
+  #    repo.archive
+  #    
+  #    expect(repo.all.length).to eq (original_number_of_records - 1)
+  #    
+  #  end
+  #end
 end
