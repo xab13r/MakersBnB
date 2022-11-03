@@ -38,14 +38,20 @@
             </tr>
           </thead>
           <tbody>
-            <% @bookings.each do |booking| %>
-            <tr>
-              <td><%= booking.name%></td>
-              <td><%= booking.description%></td>
-              <td><%= booking.booked_date %></td>
-              <td><%= booking.status.capitalize %></td>
-              <td><a href="/spaces/<%= booking.id%>">View space</a></td>
-            </tr>
+            <% if @bookings %>
+              <% @bookings.each do |booking| %>
+                <tr>
+                  <td><%= booking.name%></td>
+                  <td><%= booking.description%></td>
+                  <td><%= booking.booked_date %></td>
+                  <td><%= booking.status.capitalize %></td>
+                  <td><a href="/spaces/<%= booking.id%>">View space</a></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td>No bookings found</td>
+              </tr>
             <% end %>
           </tbody>
         </table>
@@ -62,13 +68,19 @@
             </tr>
           </thead>
           <tbody>
-            <% @spaces.each do |space| %>
-            <tr>
-              <td><%= space.name%></td>
-              <td><%= space.description%></td>
-              <td>£<%= space.price_night.round(0)%></td>
-              <td><a href="/spaces/<%= space.id%>">Book</a></td>
-            </tr>
+            <% if @spaces %>
+              <% @spaces.each do |space| %>
+                <tr>
+                  <td><%= space.name%></td>
+                  <td><%= space.description%></td>
+                  <td>£<%= space.price_night.round(0)%></td>
+                  <td><a href="/spaces/<%= space.id%>">Book</a></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td>No listings found</td>
+              </tr>
             <% end %>
           </tbody>
         </table>

@@ -205,7 +205,8 @@ describe Application do
       )
       
       expect(response.status).to eq 200
-      expect(response.body).to include('<h1>Space Created!</h1>')
+      expect(response.body).to include('<h1>Your space has been listed</h1>')
+      expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
       
       # It appears on the user dashboard
       expect(get('/dashboard').body).to include("this is a new space")
@@ -324,6 +325,31 @@ describe Application do
         expect(response.body).to include('<td>spartan space</td>')
       end
     end
+    
+    context "for a new user" do
+      it "shows message about no listings/bookings" do
+        new_user = post(
+          '/signup',
+          name: 'new user',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+        
+        login = post(
+          '/login',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+        
+        response = get('/dashboard')
+        
+        expect(response.status).to eq 200
+        expect(response.body).to include('No listings found')
+        expect(response.body).to include('No bookings found')
+        
+      end
+    end
+    
   end
 
   describe 'GET /logout' do
@@ -375,13 +401,12 @@ describe Application do
         )
         
         expect(response.status).to eq 200
-        expect(response.body).to include('<h1>Booking confirmed</h1>')
-        expect(response.body).to include('<h5>We hope you enjoy your stay!</h5>')
+        expect(response.body).to include('<h1>Your request has been sent to the host</h1>')
+        expect(response.body).to include('<h5>We will let you know when it\'s approved</h5>')
         expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
     end
     
-    # TODO: This test needs to be implemented
-    it "shows the new booking on the user dashboard" do
+      it "shows the new booking on the user dashboard" do
       login = post(
         '/login',
         email: 'email_1@email.com',
@@ -399,12 +424,14 @@ describe Application do
       dashboard = get('/dashboard')
       expect(dashboard.body).to include("2022-12-01")
       expect(dashboard.body).to include("Pending")
+      end
+    
+      xit 'shows the new booking on the host dashboard' do
+      
+      end 
     end
     
-    xit 'shows the new booking on the host dashboard' do
-      
-    end
-      
+    context "if the booking is unsuccesful" do
     end
   end
 end
