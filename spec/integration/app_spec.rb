@@ -137,13 +137,24 @@ describe Application do
       expect(response.location).to match(%r{/dashboard$})
     end
 
-    it 'reloads if login details are incorrect' do
+    it 'reloads with a message if the password is incorrect' do
       response = post(
         '/login',
         email: 'email_1@email.com',
-        password: 'stro_password'
+        password: 'stro_password' # incorrect password
       )
 
+      expect(response.status).to eq 200
+      expect(response.body).to include('Invalid email and/or password. Please try again.')
+    end
+    
+    it 'reloads with a message if the username is incorrect' do
+      response = post(
+        '/login',
+        email: 'wrong-email@email.com',
+        password: 'strong password' # incorrect password
+      )
+      
       expect(response.status).to eq 200
       expect(response.body).to include('Invalid email and/or password. Please try again.')
     end
@@ -282,7 +293,7 @@ describe Application do
   end
 
   describe 'GET /logout' do
-    xit 'logs the user out' do
+    it 'logs the user out' do
       login = get(
         '/login',
         email: 'email_1@email.com',
@@ -290,7 +301,9 @@ describe Application do
       )
 
       dashboard = get('/dashboard')
-
+      
+      p dashboard.body
+      
       expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
 
       response get('/logout')

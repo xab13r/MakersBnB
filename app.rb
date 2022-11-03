@@ -78,7 +78,6 @@ class Application < Sinatra::Base
     user = repo.find_by_email(params[:email])
 
     if utils.validate_email(email) && !password.nil? && user != false
-      # TODO: Add tests for difference conditions
       if BCrypt::Password.new(user.password) == password
         session[:user_id] = user.id
         return redirect(:dashboard)
