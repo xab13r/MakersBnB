@@ -21,7 +21,7 @@ INSERT INTO spaces (name, description, price_night, start_date, end_date, user_i
 ('spartan space', 'this is a spartan space', 20.0, '2022-12-15', '2023-01-15', 1),
 ('spartan space', 'this is a spartan space', 20.0, '2022-12-15', '2023-01-15', 3);
 
-INSERT INTO users_spaces (user_id, space_id, date, status) VALUES
+INSERT INTO users_spaces (booked_by, space_id, date, status) VALUES
 (1, 3, '2022-12-01', 'booked'),
 (2, 1, '2022-11-15', 'booked'),
 (3, 2, '2022-11-10', 'pending'),

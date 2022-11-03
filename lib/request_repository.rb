@@ -21,7 +21,7 @@ class RequestRepository
 
   def create(request)
     sql_query = 'INSERT INTO users_spaces (booked_by, space_id, date, status) VALUES ($1, $2, $3, $4);'
-    sql_params = [request.user_id, request.space_id, request.date, request.status]
+    sql_params = [request.booked_by, request.space_id, request.date, request.status]
     DatabaseConnection.exec_params(sql_query, sql_params)
   end
 
