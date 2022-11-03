@@ -388,15 +388,13 @@ describe Application do
       it 'returns a confirmation page' do
         login = post(
           '/login',
-          email: 'email_1@email.com',
-          password: 'strong password'
+          email: 'email_2@email.com',
+          password: 'strong password 1'
         )
         
         response = post(
-          '/spaces/1', 
-          user_id: 1, 
-          space_id: 3, 
-          date: '01-12-2022', 
+          '/spaces/3', 
+          date: '02-12-2022', 
           status: 'pending'
         )
         
@@ -409,20 +407,18 @@ describe Application do
       it "shows the new booking on the user dashboard" do
       login = post(
         '/login',
-        email: 'email_1@email.com',
-        password: 'strong password'
+        email: 'email_2@email.com',
+        password: 'strong password 1'
       )
       
       response = post(
-        '/spaces/1', 
-        user_id: 1, 
-        space_id: 3, 
-        date: '01-12-2022', 
+        '/spaces/3', 
+        date: '02-12-2022', 
         status: 'pending'
       )
       
       dashboard = get('/dashboard')
-      expect(dashboard.body).to include("2022-12-01")
+      expect(dashboard.body).to include("2022-12-02")
       expect(dashboard.body).to include("Pending")
       end
     
@@ -432,6 +428,21 @@ describe Application do
     end
     
     context "if the booking is unsuccesful" do
+      it "shows an error message and asks the user to try again" do
+        login = post(
+          '/login',
+          email: 'email_5@email.com',
+          password: 'strong password 3'
+        )
+        
+        response = post(
+          '/spaces/3',
+          date: '01-12-2022', 
+          status: 'pending'
+        )
+        expect(response.status).to eq 200
+        expect(response.body).to include('This space is not available on the selected date')
+      end
     end
   end
 end

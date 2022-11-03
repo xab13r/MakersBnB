@@ -167,19 +167,23 @@ class Application < Sinatra::Base
   end
 
   post '/spaces/:id' do
+    
     @space_id = params[:id]
+    space_repo = SpaceRepository.new
+    @space = space_repo.find_by_id(@space_id)
     request_repo = RequestRepository.new
     request = Request.new
     request.user_id = session[:user_id]
     request.space_id = @space_id
-    request.date = params[:date]
+    request.date = Date.parse(params[:date])
     request.status = 'pending'
 
     if request_repo.validate_request(request) == true
       request_repo.create(request)
       return erb(:booking_confirmed)
     else
-      return erb(:booking_failed)
+      @alert = 'This space is not available on the selected date'
+      return erb(:space_page)
     end
   end
 end

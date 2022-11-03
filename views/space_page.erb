@@ -52,6 +52,9 @@
             </tr>
           </tbody>
         </table>
+        <% if @alert %>
+        <p style="color: red"><%= @alert %></p>
+        <% end %>
         
       </div>
     </div>
