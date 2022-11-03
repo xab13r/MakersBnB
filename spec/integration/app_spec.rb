@@ -284,6 +284,25 @@ describe Application do
         expect(response.status).to eq 200
         expect(response.body).to include(space.name)
       end
+      
+      it "will not allow an user to book their own spaces" do
+        login = post(
+          '/login',
+          email: 'email_1@email.com',
+          password: 'strong password'
+        )
+        
+        space_id = 1
+        repo = SpaceRepository.new
+        space = repo.find_by_id(space_id)
+        
+        response = get("/spaces/#{space_id}")
+        
+        expect(response.status).to eq 200
+        expect(response.body).to include(space.name)
+        expect(response.body).to include('<p>This is one of your spaces</p>')
+        
+      end
     end
 
     context 'if the user is not logged in' do
@@ -422,7 +441,7 @@ describe Application do
       expect(dashboard.body).to include("Pending")
       end
     
-      it 'shows the new booking on the host dashboard' do
+      xit 'shows the new booking on the host dashboard' do
       
       end 
     end
