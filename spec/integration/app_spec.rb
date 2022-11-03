@@ -186,7 +186,51 @@ describe Application do
     
   end
 
-  context 'POST /list_spaces' do
+  describe 'POST /list_spaces' do
+    
+    it "creates a new Space offered by the user" do
+      login = post(
+        '/login',
+        email: 'email_1@email.com',
+        password: 'strong password'
+      )
+      
+      response = post(
+        '/add_space', 
+        name: 'this is a new space', 
+        description: 'a description for a nice new place', 
+        price_night: 20.00,
+        start_date: '12-12-2022', 
+        end_date: '12-01-2023'
+      )
+      
+      expect(response.status).to eq 200
+      expect(response.body).to include('<h1>Space Created!</h1>')
+      
+      # It appears on the user dashboard
+      expect(get('/dashboard').body).to include("this is a new space")
+    end
+    
+    it "shows an error message if one of the fields has an invalid value" do
+      login = post(
+        '/login',
+        email: 'email_1@email.com',
+        password: 'strong password'
+      )
+      
+      response = post(
+        '/add_space', 
+        name: 'this is a new space', 
+        description: 'a description for a nice new place', 
+        price_night: 'invalid price',
+        start_date: '12-12-2022', 
+        end_date: '12-01-2023'
+      )
+      
+      expect(response.status).to eq 200
+      expect(response.body).to include('Invalid inputs provided, please try again')
+    end
+    
     xit 'adds a new listing to the database with the users id' do
       response = post('/list_spaces', name: 'test1', description: 'test1', price_night: 20.00,
                                       start_date: '01-02-2022', end_date: '02-02-2022', user_id: 1)

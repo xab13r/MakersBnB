@@ -107,17 +107,34 @@ class Application < Sinatra::Base
 
   post '/add_space' do
     repo = SpaceRepository.new
+    utils = Utilities.new
     space = Space.new
-    space.name = params[:name]
-    space.description = params[:description]
-    space.price_night = params[:price_night]
-    start_date = Date.parse(params[:start_date])
-    space.start_date = start_date
-    end_date = Date.parse(params[:end_date])
-    space.end_date = end_date
-    space.user_id = params[:user_id]
-    repo.create(space)
-    return erb(:space_created)
+    
+    begin
+      name = utils.sanitize(params[:name])
+      description = utils.sanitize(params[:description])
+      if price_night = utils.sanitize(params[:price_night]).to_f.zero?
+        @alert = 'Invalid inputs provided, please try again'
+        return erb(:add_space)
+      else
+        start_date = Date.parse(params[:start_date])
+        end_date = Date.parse(params[:end_date])
+        space.name = name
+        space.description = description
+        space.price_night = price_night
+        space.start_date = start_date
+        space.end_date = end_date
+        space.user_id = session[:user_id]
+        
+        #binding.irb
+        
+        repo.create(space)
+        return erb(:space_created)
+      end
+    rescue StandardError
+      @alert = 'Invalid inputs provided, please try again'
+      return erb(:add_space)
+    end
   end
 
   get '/spaces/:id' do
