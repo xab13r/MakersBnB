@@ -173,7 +173,7 @@ class Application < Sinatra::Base
     @space = space_repo.find_by_id(@space_id)
     request_repo = RequestRepository.new
     request = Request.new
-    request.user_id = session[:user_id]
+    request.booked_by = session[:user_id]
     request.space_id = @space_id
     request.date = Date.parse(params[:date])
     request.status = 'pending'
