@@ -5,7 +5,7 @@ require_relative 'request'
 class RequestRepository
   def request_from_record(record)
     request = Request.new
-    request.user_id = record['user_id'].to_i
+    request.booked_by = record['booked_by'].to_i
     request.space_id = record['space_id'].to_i
     request.date = record['date']
     request.status = record['status']
@@ -20,7 +20,7 @@ class RequestRepository
   end
 
   def create(request)
-    sql_query = 'INSERT INTO users_spaces (user_id, space_id, date, status) VALUES ($1, $2, $3, $4);'
+    sql_query = 'INSERT INTO users_spaces (booked_by, space_id, date, status) VALUES ($1, $2, $3, $4);'
     sql_params = [request.user_id, request.space_id, request.date, request.status]
     DatabaseConnection.exec_params(sql_query, sql_params)
   end

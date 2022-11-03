@@ -57,7 +57,7 @@ class UserRepository
 
   def find_by_space(space_id)
     sql_query = 'SELECT users.id, users.name, users.email, users.password FROM users
-    JOIN users_spaces ON users_spaces.user_id = users.id
+    JOIN users_spaces ON users_spaces.booked_by = users.id
     JOIN spaces ON users_spaces.space_id = spaces.id
     WHERE spaces.id = $1;'
     sql_params = [space_id]
