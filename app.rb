@@ -50,7 +50,6 @@ class Application < Sinatra::Base
       begin
         repo.create(new_user)
         return erb(:account_created)
-        # TODO: Style account created
       rescue StandardError
         @alert = 'Email address already in use'
         return erb(:signup)
@@ -110,30 +109,25 @@ class Application < Sinatra::Base
     utils = Utilities.new
     space = Space.new
     
-    begin
-      name = utils.sanitize(params[:name])
-      description = utils.sanitize(params[:description])
-      if price_night = utils.sanitize(params[:price_night]).to_f.zero?
-        @alert = 'Invalid inputs provided, please try again'
-        return erb(:add_space)
-      else
-        start_date = Date.parse(params[:start_date])
-        end_date = Date.parse(params[:end_date])
-        space.name = name
-        space.description = description
-        space.price_night = price_night
-        space.start_date = start_date
-        space.end_date = end_date
-        space.user_id = session[:user_id]
-        
-        #binding.irb
-        
-        repo.create(space)
-        return erb(:space_created)
-      end
-    rescue StandardError
+    name = utils.sanitize(params[:name])
+    description = utils.sanitize(params[:description])
+    price_night = utils.sanitize(params[:price_night]).to_f
+    
+    if price_night.zero?
       @alert = 'Invalid inputs provided, please try again'
       return erb(:add_space)
+    else
+      start_date = Date.parse(params[:start_date])
+      end_date = Date.parse(params[:end_date])
+      space.name = name
+      space.description = description
+      space.price_night = price_night
+      space.start_date = start_date
+      space.end_date = end_date
+      space.user_id = session[:user_id]
+      
+      repo.create(space)
+      return erb(:space_created)
     end
   end
 
