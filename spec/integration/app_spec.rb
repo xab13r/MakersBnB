@@ -205,7 +205,8 @@ describe Application do
       )
       
       expect(response.status).to eq 200
-      expect(response.body).to include('<h1>Space Created!</h1>')
+      expect(response.body).to include('<h1>Your space has been listed</h1>')
+      expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
       
       # It appears on the user dashboard
       expect(get('/dashboard').body).to include("this is a new space")
