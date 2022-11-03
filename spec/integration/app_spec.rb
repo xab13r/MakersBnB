@@ -401,8 +401,8 @@ describe Application do
         )
         
         expect(response.status).to eq 200
-        expect(response.body).to include('<h1>Booking confirmed</h1>')
-        expect(response.body).to include('<h5>We hope you enjoy your stay!</h5>')
+        expect(response.body).to include('<h1>Your request has been sent to the host</h1>')
+        expect(response.body).to include('<h5>We will let you know when it\'s approved</h5>')
         expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
     end
     
