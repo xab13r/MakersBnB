@@ -293,21 +293,33 @@ describe Application do
   end
 
   describe 'GET /logout' do
-    it 'logs the user out' do
-      login = post(
-        '/login',
-        email: 'email_1@email.com',
-        password: 'strong password'
-      )
-
-      dashboard = get('/dashboard')
-      
-      expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
-
-      logout = get('/logout')
-
-      expect(get('dashboard').status).to eq 302
-      expect(get('dashboard').location).to match(%r{/login$})
+    context "if the user is logged in" do
+      it "logs the user out and redirects to the homepage" do
+        login = post(
+          '/login',
+          email: 'email_1@email.com',
+          password: 'strong password'
+        )
+        # Check this page is reachable as the user is logged in
+        dashboard = get('/dashboard')
+        expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
+        
+        logout = get('/logout')
+        
+        # Verify it redirects to the homepage after logout
+        expect(logout.location).to match(%r{/$})
+        
+        # Verify user has been logged out
+        expect(get('dashboard').status).to eq 302
+        expect(get('dashboard').location).to match(%r{/login$})
+      end
+    end
+    
+    context "if the user is not logged in" do
+      it "redirects to the homepage" do
+        logout = get('/logout')
+        expect(logout.location).to match(%r{/$})
+      end
     end
   end
 
