@@ -294,7 +294,7 @@ describe Application do
 
   describe 'GET /logout' do
     it 'logs the user out' do
-      login = get(
+      login = post(
         '/login',
         email: 'email_1@email.com',
         password: 'strong password'
@@ -302,11 +302,9 @@ describe Application do
 
       dashboard = get('/dashboard')
       
-      p dashboard.body
-      
       expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
 
-      response get('/logout')
+      logout = get('/logout')
 
       expect(get('dashboard').status).to eq 302
       expect(get('dashboard').location).to match(%r{/login$})
