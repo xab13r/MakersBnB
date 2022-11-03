@@ -97,11 +97,15 @@ class Application < Sinatra::Base
     return erb(:spaces)
   end
 
-  get '/list_spaces' do
-    return erb(:list_spaces)
+  get '/add_space' do
+    if session[:user_id]
+      return erb(:add_space)
+    else
+      return redirect('/login')
+    end
   end
 
-  post '/list_spaces' do
+  post '/add_space' do
     repo = SpaceRepository.new
     space = Space.new
     space.name = params[:name]

@@ -12,7 +12,7 @@ RSpec.describe RequestRepository do
   end
 
   describe '#all' do
-    it 'returns an array of request objects' do
+    it 'returns an array of Request objects' do
       repo = RequestRepository.new
 
       all_requests = repo.all
@@ -68,6 +68,7 @@ RSpec.describe RequestRepository do
 
       expect(repo.validate_request(request)).to eq true
     end
+    
     it 'checks if the space is already booked, returns false if booked' do
       request = Request.new
       request.user_id = 1
