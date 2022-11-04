@@ -107,6 +107,10 @@ RSpec.describe RequestRepository do
     end
   end
   
+  # TODO: Approve request
+  # TODO: Implement on Dashboard (show user name instead of id)
+  # TODO: Set up POST request for cancelling and approving
+  
   
   #describe '#archive' do
   #  it 'moves past bookings to the archives table' do

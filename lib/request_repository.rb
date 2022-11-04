@@ -1,7 +1,6 @@
 require 'date'
 require_relative 'database_connection'
 require_relative 'request'
-require 'date'
 
 class RequestRepository
   def request_from_record(record)
