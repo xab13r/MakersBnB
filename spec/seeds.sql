@@ -4,7 +4,7 @@ SET client_min_messages TO WARNING;
 -- Testing seeds
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 TRUNCATE TABLE spaces RESTART IDENTITY CASCADE;
-TRUNCATE TABLE users_spaces RESTART IDENTITY CASCADE;
+TRUNCATE TABLE bookings RESTART IDENTITY CASCADE;
 
 INSERT INTO users (name, email, password) VALUES
 ('user 1', 'email_1@email.com', '$2a$12$7mfDByVKXH/lhYEyw0WXr.mLZ5QP5XsdmruSM/YCKiUav2IGpgr32'), -- 'strong password'

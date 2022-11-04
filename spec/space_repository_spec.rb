@@ -148,8 +148,8 @@ RSpec.describe SpaceRepository do
       spaces = repo.find_booked_by_user(user_id)
 
       expect(spaces.length).to eq 2
-      expect(spaces.first.id).to eq 2
-      expect(spaces.last.id).to eq 3
+      expect(spaces.first.id).to eq 3
+      expect(spaces.last.id).to eq 2
     end
 
     it 'returns false if there is no match' do
