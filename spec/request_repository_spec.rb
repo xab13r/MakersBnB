@@ -1,5 +1,5 @@
 require './lib/request_repository'
-require'./lib/space_repository'
+require './lib/space_repository'
 
 def reset_tables
   seed_sql = File.read('spec/seeds.sql')
@@ -69,7 +69,7 @@ RSpec.describe RequestRepository do
 
       expect(repo.validate_request(request)).to eq true
     end
-    
+
     it 'checks if the space is already booked, returns false if booked' do
       request = Request.new
       request.booked_by = 1
@@ -82,7 +82,7 @@ RSpec.describe RequestRepository do
       expect(repo.validate_request(request)).to eq false
     end
   end
-  
+
   describe "#cancel_request" do
     it "cancels a request" do
       repo = RequestRepository.new
@@ -93,34 +93,33 @@ RSpec.describe RequestRepository do
       request.status = 'pending'
 
       repo.create(request)
-      
+
       repo.cancel_request(5, 2)
-      
+
       expect(repo.all).to include(
         have_attributes(
           booked_by: 5,
           space_id: 2,
           date: '2022-11-10',
-          status: 'cancelled'          
+          status: 'cancelled'
         )
       )
     end
   end
-  
+
   # TODO: Approve request
   # TODO: Implement on Dashboard (show user name instead of id)
   # TODO: Set up POST request for cancelling and approving
-  
-  
-  #describe '#archive' do
+
+  # describe '#archive' do
   #  it 'moves past bookings to the archives table' do
   #    repo = RequestRepository.new
-  #    
+  #
   #    original_number_of_records = repo.all.length
   #    repo.archive
-  #    
+  #
   #    expect(repo.all.length).to eq (original_number_of_records - 1)
-  #    
+  #
   #  end
-  #end
+  # end
 end

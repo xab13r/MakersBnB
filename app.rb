@@ -6,7 +6,7 @@ require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
 require_relative 'lib/utilities'
-#require_relative 'lib/request_repository'
+# require_relative 'lib/request_repository'
 require_relative 'lib/booking_repository'
 
 ENV['ENV'] = 'test'
@@ -109,11 +109,11 @@ class Application < Sinatra::Base
     repo = SpaceRepository.new
     utils = Utilities.new
     space = Space.new
-    
+
     name = utils.sanitize(params[:name])
     description = utils.sanitize(params[:description])
     price_night = utils.sanitize(params[:price_night]).to_f
-    
+
     if price_night.zero?
       @alert = 'Invalid inputs provided, please try again'
       return erb(:add_space)
@@ -126,7 +126,7 @@ class Application < Sinatra::Base
       space.start_date = start_date
       space.end_date = end_date
       space.user_id = session[:user_id]
-      
+
       repo.create(space)
       return erb(:space_created)
     end
@@ -153,9 +153,9 @@ class Application < Sinatra::Base
       booking_repo = BookingRepository.new
       @user = user_repo.find_by_id(user_id)
       @spaces = @space_repo.find_listed_by_user(user_id)
-      
+
       @bookings = booking_repo.find_active_booking(user_id)
-      
+
       @listings = booking_repo.find_active_listing(user_id)
 
       return erb(:dashboard)
@@ -172,11 +172,10 @@ class Application < Sinatra::Base
   end
 
   post '/spaces/:id' do
-    
     @space_id = params[:id]
     space_repo = SpaceRepository.new
     @space = space_repo.find_by_id(@space_id)
-    booking_repo = BookingRepository.new    
+    booking_repo = BookingRepository.new
     booking = Booking.new
     booking.booked_by = session[:user_id]
     booking.space_id = @space_id
@@ -184,7 +183,7 @@ class Application < Sinatra::Base
     booking.booked_from = Date.parse(params[:date])
     booking.booked_to = Date.parse(params[:date])
     booking.status = 'pending'
-    
+
     if booking_repo.validate_booking(booking) == true
       booking_repo.create_booking(booking)
       return erb(:booking_confirmed)
@@ -193,17 +192,16 @@ class Application < Sinatra::Base
       return erb(:space_page)
     end
   end
-  
+
   post '/cancel_booking/:id' do
     repo = BookingRepository.new
     repo.cancel_booking(params[:id])
     return redirect('/dashboard')
   end
-  
+
   post '/confirm_booking/:id' do
     repo = BookingRepository.new
     repo.confirm_booking(params[:id])
     return redirect('/dashboard')
   end
-  
 end
