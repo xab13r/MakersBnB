@@ -6,7 +6,8 @@ require_relative 'lib/database_connection'
 require_relative 'lib/user_repository'
 require_relative 'lib/space_repository'
 require_relative 'lib/utilities'
-require_relative 'lib/request_repository'
+#require_relative 'lib/request_repository'
+require_relative 'lib/booking_repository'
 
 ENV['ENV'] = 'test'
 DatabaseConnection.connect
@@ -148,10 +149,14 @@ class Application < Sinatra::Base
     else
       user_id = session[:user_id]
       user_repo = UserRepository.new
-      space_repo = SpaceRepository.new
+      @space_repo = SpaceRepository.new
+      booking_repo = BookingRepository.new
       @user = user_repo.find_by_id(user_id)
-      @spaces = space_repo.find_listed_by_user(user_id)
-      @bookings = space_repo.find_booked_by_user(user_id)
+      @spaces = @space_repo.find_listed_by_user(user_id)
+      
+      @bookings = booking_repo.find_active_booking(user_id)
+      
+      @listings = booking_repo.find_active_listing(user_id)
 
       return erb(:dashboard)
     end
@@ -171,21 +176,18 @@ class Application < Sinatra::Base
     @space_id = params[:id]
     space_repo = SpaceRepository.new
     @space = space_repo.find_by_id(@space_id)
-    request_repo = RequestRepository.new
-    request = Request.new
-    request.booked_by = session[:user_id]
-    request.space_id = @space_id
-    request.date = Date.parse(params[:date])
-    request.status = 'pending'
+    booking_repo = BookingRepository.new    
+    booking = Booking.new
+    booking.booked_by = session[:user_id]
+    booking.space_id = @space_id
+    booking.listed_by = @space.user_id
+    booking.booked_from = Date.parse(params[:date])
+    booking.booked_to = Date.parse(params[:date])
+    booking.status = 'pending'
     
-    if request_repo.validate_request(request) == true
-      begin
-        request_repo.create(request)
-        return erb(:booking_confirmed)
-      rescue StandardError
-        @alert = 'You cannot book a space for more than one night'
-        return erb(:space_page)
-      end
+    if booking_repo.validate_booking(booking) == true
+      booking_repo.create_booking(booking)
+      return erb(:booking_confirmed)
     else
       @alert = 'This space is not available on the selected date'
       return erb(:space_page)

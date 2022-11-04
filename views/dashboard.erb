@@ -41,11 +41,11 @@
             <% if @bookings %>
               <% @bookings.each do |booking| %>
                 <tr>
-                  <td><%= booking.name%></td>
-                  <td><%= booking.description%></td>
-                  <td><%= booking.booked_date %></td>
+                  <td><%= @space_repo.find_by_id(booking.space_id).name %></td>
+                  <td><%= @space_repo.find_by_id(booking.space_id).description %></td>
+                  <td><%= booking.booked_from %></td>
                   <td><%= booking.status.capitalize %></td>
-                  <td><a href="/spaces/<%= booking.id%>">View space</a></td>
+                  <td><a href="/spaces/<%= booking.space_id%>">View space</a></td>
                 </tr>
               <% end %>
             <% else %>
@@ -56,30 +56,71 @@
           </tbody>
         </table>
         
-        <h2>Your Listings</h2>
+        <h2>Your Active Listings</h2>
         
         <table class="u-full-width">
           <thead>
             <tr>
               <th>Name</th>
               <th>Description</th>
-              <th>Price per Night</th>
-              <th>Book</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @listings %>
+              <% @listings.each do |listing| %>
+                <tr>
+                  <td><%= @space_repo.find_by_id(listing.space_id).name %></td>
+                  
+                  <% if @space_repo.find_by_id(listing.space_id).description.length > 30 %>
+                    <td><%= @space_repo.find_by_id(listing.space_id).description[0,30] + '...' %></td>
+                  <% else %>
+                    <td><%= @space_repo.find_by_id(listing.space_id).description %></td>
+                  <% end %>
+                  <td><%= listing.booked_from %></td>
+                  <td><%= listing.status %></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td>No listings found</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        
+        <h2>Your Spaces</h2>
+        
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Available From</th>
+              <th>Available To</th>
+              <th>Link</th>
             </tr>
           </thead>
           <tbody>
             <% if @spaces %>
               <% @spaces.each do |space| %>
                 <tr>
-                  <td><%= space.name%></td>
-                  <td><%= space.description%></td>
-                  <td>£<%= space.price_night.round(0)%></td>
-                  <td><a href="/spaces/<%= space.id%>">Book</a></td>
+                  <td><%= space.name %></td>
+                  <% if space.description.length > 30 %>
+                    <td><%= space.description[0,30] + '...' %></td>
+                  <% else %>
+                    <td><%= space.description %></td>
+                  <% end %>
+                  <td><%= space.start_date %></td>
+                  <td><%= space.end_date %></td>
+                  <td><a href="/spaces/<%= space.id%>">View space</a></td>
                 </tr>
               <% end %>
             <% else %>
               <tr>
-                <td>No listings found</td>
+                <td>No spaces found</td>
               </tr>
             <% end %>
           </tbody>

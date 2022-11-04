@@ -350,7 +350,7 @@ describe Application do
     end
     
     context "for a new user" do
-      it "shows message about no listings/bookings" do
+      it "shows message about no listings/bookings/spaces" do
         new_user = post(
           '/signup',
           name: 'new user',
@@ -369,6 +369,56 @@ describe Application do
         expect(response.status).to eq 200
         expect(response.body).to include('No listings found')
         expect(response.body).to include('No bookings found')
+        expect(response.body).to include('No spaces found')
+      end
+    end
+    
+    context "if a user has no active bookings" do
+      it "shows a `no bookings found`message" do
+        login = post(
+          '/login',
+          email: 'email_5@email.com',
+          password: 'strong password 3'
+        )
+        
+        response = get('/dashboard')
+        
+        expect(response.status).to eq 200
+        expect(response.body).to include('No bookings found')
+        
+      end
+    end
+    
+    context "if a user has no active listings" do
+      it "shows a `no listings found`message" do
+        new_user = post(
+          '/signup',
+          name: 'new user',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+        
+        login = post(
+          '/login',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+        
+        create_space = post(
+          '/add_space', 
+          name: 'this is a new space', 
+          description: 'a description for a nice new place', 
+          price_night: 20.00,
+          start_date: '12-12-2022', 
+          end_date: '12-01-2023'
+        )
+        
+        response = get('/dashboard')
+        
+        expect(response.status).to eq 200
+        expect(response.body).to include('No bookings found')
+        expect(response.body).to include('No listings found')
+        expect(response.body).to include('this is a new space')
         
       end
     end
@@ -407,31 +457,6 @@ describe Application do
   end
 
   describe 'POST /spaces/id' do
-    
-    it "doesn't allow a user to book a space for more than one night" do
-      login = post(
-        '/login',
-        email: 'email_2@email.com',
-        password: 'strong password 1'
-      )
-      
-      response = post(
-        '/spaces/3', 
-        date: '02-12-2022', 
-        status: 'pending'
-      )
-      
-      response = post(
-        '/spaces/3', 
-        date: '10-12-2022', 
-        status: 'pending'
-      )
-      
-      expect(response.status).to eq 200
-      expect(response.body).to include("You cannot book a space for more than one night")
-      
-    end
-    
     context "if booking is successful" do
       it 'returns a confirmation page' do
         login = post(
