@@ -22,14 +22,6 @@ INSERT INTO spaces (name, description, price_night, start_date, end_date, user_i
 ('long description space', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 150.0, '2023-01-1', '2023-01-31', 1),
 ('spartan space', 'this is a spartan space', 20.0, '2022-12-15', '2023-01-15', 3);
 
-INSERT INTO users_spaces (booked_by, space_id, date, status) VALUES
-(1, 3, '2022-12-01', 'booked'),
-(2, 1, '2022-11-15', 'booked'),
-(3, 2, '2022-11-10', 'pending'),
-(4, 2, '2022-11-10', 'pending'),
-(1, 2, '2022-11-01', 'booked'), -- record to be archived
-(2, 5, '2022-12-31', 'booked');
-
 INSERT INTO bookings (booked_by, space_id, listed_by, booked_from, booked_to, status) VALUES
 (1, 3, 3, '2022-12-01', '2022-12-01', 'confirmed'),
 (2, 1, 1, '2022-11-15', '2022-11-15', 'confirmed'),
@@ -38,13 +30,3 @@ INSERT INTO bookings (booked_by, space_id, listed_by, booked_from, booked_to, st
 (1, 2, 2, '2022-11-01', '2022-11-01', 'confirmed'), -- record to be archived
 (3, 2, 2, '2022-11-02', '2022-11-02', 'archived'), -- record to be archived
 (2, 5, 1, '2022-12-31', '2022-12-31', 'confirmed');
-
-INSERT INTO archives (booked_by, space_id, date, status) VALUES
-(2, 3, '2022-10-15', 'archived'),
-(3, 4, '2022-10-10', 'archived'),
-(4, 5, '2022-10-10', 'archived'),
-(1, 5, '2022-08-31', 'archived'),
-(2, 1, '2022-08-31', 'archived'),
-(3, 2, '2022-08-31', 'archived'),
-(4, 3, '2022-08-31', 'archived'),
-(5, 4, '2022-08-31', 'archived');
