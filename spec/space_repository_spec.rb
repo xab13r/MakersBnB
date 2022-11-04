@@ -162,26 +162,24 @@ RSpec.describe SpaceRepository do
   describe '#find_spaces_by_user' do
     it "returns an array of all Space objects who have been requested" do
       repo = SpaceRepository.new
-      
+
       user_id = 1
       spaces = repo.find_spaces_by_user(user_id)
-      
+
       expect(spaces.length).to eq 2
       expect(spaces.first.id).to eq 1
       expect(spaces.last.id).to eq 5
     end
-    
+
     it "returns false if there is no match" do
       repo = SpaceRepository.new
-      
+
       user_id = 4
       spaces = repo.find_spaces_by_user(user_id)
-      
+
       expect(spaces).to eq false
     end
-    
   end
-
 
   describe '#create' do
     it 'add a space to the database' do

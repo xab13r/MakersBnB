@@ -147,14 +147,14 @@ describe Application do
       expect(response.status).to eq 200
       expect(response.body).to include('Invalid email and/or password. Please try again.')
     end
-    
+
     it 'reloads with a message if the username is incorrect' do
       response = post(
         '/login',
         email: 'wrong-email@email.com',
         password: 'strong password' # incorrect password
       )
-      
+
       expect(response.status).to eq 200
       expect(response.body).to include('Invalid email and/or password. Please try again.')
     end
@@ -168,14 +168,14 @@ describe Application do
           email: 'email_1@email.com',
           password: 'strong password'
         )
-        
+
         response = get('/add_space')
-        
+
         expect(response.status).to eq 200
         expect(response.body).to include('<h1>List a Space</h1>')
       end
     end
-    
+
     context 'if the user is not logged in' do
       it 'redirects to the login page' do
         response = get('/add_space')
@@ -183,55 +183,52 @@ describe Application do
         expect(response.location).to match(/\/login$/)
       end
     end
-    
   end
 
   describe 'POST /add_space' do
-    
     it "creates a new Space offered by the user" do
       login = post(
         '/login',
         email: 'email_1@email.com',
         password: 'strong password'
       )
-      
+
       response = post(
-        '/add_space', 
-        name: 'this is a new space', 
-        description: 'a description for a nice new place', 
+        '/add_space',
+        name: 'this is a new space',
+        description: 'a description for a nice new place',
         price_night: 20.00,
-        start_date: '12-12-2022', 
+        start_date: '12-12-2022',
         end_date: '12-01-2023'
       )
-      
+
       expect(response.status).to eq 200
       expect(response.body).to include('<h1>Your space has been listed</h1>')
       expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
-      
+
       # It appears on the user dashboard
       expect(get('/dashboard').body).to include("this is a new space")
     end
-    
+
     it "shows an error message if the price is invalid" do
       login = post(
         '/login',
         email: 'email_1@email.com',
         password: 'strong password'
       )
-      
+
       response = post(
-        '/add_space', 
-        name: 'this is a new space', 
-        description: 'a description for a nice new place', 
+        '/add_space',
+        name: 'this is a new space',
+        description: 'a description for a nice new place',
         price_night: 'invalid price', # invalid price
-        start_date: '12-12-2022', 
+        start_date: '12-12-2022',
         end_date: '12-01-2023'
       )
-      
+
       expect(response.status).to eq 200
       expect(response.body).to include('Invalid inputs provided, please try again')
     end
-    
   end
 
   context 'GET /spaces' do
@@ -246,7 +243,6 @@ describe Application do
 
     context "if the space description is too long" do
       it "will be truncated with an ellipsis" do
-
       end
     end
 
@@ -288,24 +284,23 @@ describe Application do
         expect(response.status).to eq 200
         expect(response.body).to include(space.name)
       end
-      
+
       it "will not allow an user to book their own spaces" do
         login = post(
           '/login',
           email: 'email_1@email.com',
           password: 'strong password'
         )
-        
+
         space_id = 1
         repo = SpaceRepository.new
         space = repo.find_by_id(space_id)
-        
+
         response = get("/spaces/#{space_id}")
-        
+
         expect(response.status).to eq 200
         expect(response.body).to include(space.name)
         expect(response.body).to include('<p>This is one of your spaces</p>')
-        
       end
     end
 
@@ -348,31 +343,78 @@ describe Application do
         expect(response.body).to include('<td>spartan space</td>')
       end
     end
-    
+
     context "for a new user" do
-      it "shows message about no listings/bookings" do
+      it "shows message about no listings/bookings/spaces" do
         new_user = post(
           '/signup',
           name: 'new user',
           email: 'new_email@email.com',
           password: 'password'
         )
-        
+
         login = post(
           '/login',
           email: 'new_email@email.com',
           password: 'password'
         )
-        
+
         response = get('/dashboard')
-        
+
         expect(response.status).to eq 200
         expect(response.body).to include('No listings found')
         expect(response.body).to include('No bookings found')
-        
+        expect(response.body).to include('No spaces found')
       end
     end
-    
+
+    context "if a user has no active bookings" do
+      it "shows a `no bookings found`message" do
+        login = post(
+          '/login',
+          email: 'email_5@email.com',
+          password: 'strong password 3'
+        )
+
+        response = get('/dashboard')
+
+        expect(response.status).to eq 200
+        expect(response.body).to include('No bookings found')
+      end
+    end
+
+    context "if a user has no active listings" do
+      it "shows a `no listings found`message" do
+        new_user = post(
+          '/signup',
+          name: 'new user',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+
+        login = post(
+          '/login',
+          email: 'new_email@email.com',
+          password: 'password'
+        )
+
+        create_space = post(
+          '/add_space',
+          name: 'this is a new space',
+          description: 'a description for a nice new place',
+          price_night: 20.00,
+          start_date: '12-12-2022',
+          end_date: '12-01-2023'
+        )
+
+        response = get('/dashboard')
+
+        expect(response.status).to eq 200
+        expect(response.body).to include('No bookings found')
+        expect(response.body).to include('No listings found')
+        expect(response.body).to include('this is a new space')
+      end
+    end
   end
 
   describe 'GET /logout' do
@@ -386,18 +428,18 @@ describe Application do
         # Check this page is reachable as the user is logged in
         dashboard = get('/dashboard')
         expect(dashboard.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
-        
+
         logout = get('/logout')
-        
+
         # Verify it redirects to the homepage after logout
         expect(logout.location).to match(%r{/$})
-        
+
         # Verify user has been logged out
         expect(get('dashboard').status).to eq 302
         expect(get('dashboard').location).to match(%r{/login$})
       end
     end
-    
+
     context "if the user is not logged in" do
       it "redirects to the homepage" do
         logout = get('/logout')
@@ -407,31 +449,6 @@ describe Application do
   end
 
   describe 'POST /spaces/id' do
-    
-    it "doesn't allow a user to book a space for more than one night" do
-      login = post(
-        '/login',
-        email: 'email_2@email.com',
-        password: 'strong password 1'
-      )
-      
-      response = post(
-        '/spaces/3', 
-        date: '02-12-2022', 
-        status: 'pending'
-      )
-      
-      response = post(
-        '/spaces/3', 
-        date: '10-12-2022', 
-        status: 'pending'
-      )
-      
-      expect(response.status).to eq 200
-      expect(response.body).to include("You cannot book a space for more than one night")
-      
-    end
-    
     context "if booking is successful" do
       it 'returns a confirmation page' do
         login = post(
@@ -439,42 +456,66 @@ describe Application do
           email: 'email_2@email.com',
           password: 'strong password 1'
         )
-        
+
         response = post(
-          '/spaces/3', 
-          date: '02-12-2022', 
+          '/spaces/3',
+          date: '02-12-2022',
           status: 'pending'
         )
-        
+
         expect(response.status).to eq 200
         expect(response.body).to include('<h1>Your request has been sent to the host</h1>')
         expect(response.body).to include('<h5>We will let you know when it\'s approved</h5>')
         expect(response.body).to include('<a class="button button-primary" href="/dashboard">Dashboard</a>')
-    end
-    
-      it "shows the new booking on the user dashboard" do
-      login = post(
-        '/login',
-        email: 'email_2@email.com',
-        password: 'strong password 1'
-      )
-      
-      response = post(
-        '/spaces/3', 
-        date: '02-12-2022', 
-        status: 'pending'
-      )
-      
-      dashboard = get('/dashboard')
-      expect(dashboard.body).to include("2022-12-02")
-      expect(dashboard.body).to include("Pending")
       end
-    
-      xit 'shows the new booking on the host dashboard' do
-      
-      end 
+
+      it "shows the new booking on the user dashboard" do
+        login = post(
+          '/login',
+          email: 'email_2@email.com',
+          password: 'strong password 1'
+        )
+
+        response = post(
+          '/spaces/3',
+          date: '02-12-2022',
+          status: 'pending'
+        )
+
+        dashboard = get('/dashboard')
+        expect(dashboard.body).to include("2022-12-02")
+        expect(dashboard.body).to include("pending")
+      end
+
+      it 'shows the new booking on the host dashboard' do
+          login = post(
+            '/login',
+            email: 'email_2@email.com',
+            password: 'strong password 1'
+          )
+          
+          response = post(
+            '/spaces/3',
+            date: '02-12-2022',
+            status: 'pending'
+          )
+          
+          logout = get('/logout')
+          
+          login = post(
+            '/login',
+            email: 'email_3@email.com',
+            password: 'strong password 2'
+          )
+          
+          dashboard = get('/dashboard')
+          expect(dashboard.body).to include("not so fancy space")
+          expect(dashboard.body).to include("2022-12-02")
+          expect(dashboard.body).to include("pending")
+          
+      end
     end
-    
+
     context "if the booking is unsuccesful" do
       it "shows an error message and asks the user to try again" do
         login = post(
@@ -482,10 +523,10 @@ describe Application do
           email: 'email_5@email.com',
           password: 'strong password 3'
         )
-        
+
         response = post(
           '/spaces/3',
-          date: '01-12-2022', 
+          date: '01-12-2022',
           status: 'pending'
         )
         expect(response.status).to eq 200
@@ -493,4 +534,154 @@ describe Application do
       end
     end
   end
+
+  describe 'POST /cancel_booking/:id' do
+    it "changes the status of a confirmed booking to cancelled" do
+      login = post(
+        '/login',
+        email: 'email_2@email.com',
+        password: 'strong password 1'
+      )
+
+      dashboard = get('/dashboard')
+
+      space_name = '<td>this is a fancier space</td>'
+
+      expect(dashboard.body).to include('<td>fancier space</td>')
+      expect(dashboard.body).to include('<td>this is a fancier space</td>')
+      expect(dashboard.body).to include('<td>2022-11-01</td>')
+
+      og_space_name_count = dashboard.body.scan(space_name).length
+
+      cancel = post(
+        '/cancel_booking/5'
+      )
+
+      expect(cancel.status).to eq 302
+
+      dashboard = get('/dashboard')
+
+      new_space_name_count = dashboard.body.scan(space_name).length
+
+      expect(new_space_name_count).to eq og_space_name_count - 1
+    end
+  end
+
+  describe "POST /confirm_booking/:id" do
+    it "changes the status from `pending` to `confirmed`" do
+      login = post(
+        '/login',
+        email: 'email_2@email.com',
+        password: 'strong password 1'
+      )
+
+      dashboard = get('/dashboard')
+
+      og_pending_count = dashboard.body.scan('pending').length
+
+      p og_pending_count
+
+      confirm = post(
+        '/confirm_booking/3'
+      )
+
+      dashboard = get('/dashboard')
+
+      new_pending_count = dashboard.body.scan('pending').length
+
+      expect(new_pending_count).to eq og_pending_count - 1
+    end
+  end
+  
+  describe "Full run test" do
+    it "tests a full run of the main functionalities" do
+      # Create a new host
+      new_host = post(
+        '/signup',
+        name: 'new host',
+        email: 'new_host@email.com',
+        password: 'password'
+      )
+      
+      login = post(
+        '/login',
+        email: 'new_host@email.com',
+        password: 'password'
+      )
+      
+      # Create a new space
+      new_space = post(
+        '/add_space',
+        name: 'new host new space',
+        description: 'a description for a hosted place',
+        price_night: 20.00,
+        start_date: '12-12-2022',
+        end_date: '12-01-2023'
+      )
+      
+      logout = get('/logout')
+      
+      # Create a new guest
+      new_guest = post(
+        '/signup',
+        name: 'new guest',
+        email: 'new_guest@email.com',
+        password: 'password'
+      )
+      
+      login = post(
+        '/login',
+        email: 'new_guest@email.com',
+        password: 'password'
+      )
+      
+      # The guest book the new space
+      new_booking = post(
+        '/spaces/7',
+        date: '31-12-2022',
+        status: 'pending'
+      )
+      
+      logout = get('/logout')
+                  
+      # The host can see the request on their dashboard 
+      login = post(
+        '/login',
+        email: 'new_host@email.com',
+        password: 'password'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      expect(dashboard.body).to include('pending')
+      expect(dashboard.body).to include('2022-12-31')
+      
+      host_approves = post(
+        '/confirm_booking/8'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      # The host can see the booking as confirmed
+      expect(dashboard.body).to include('confirmed')
+      expect(dashboard.body).to include('2022-12-31')
+      
+      logout = get('/logout')
+      
+      # The guest can see the booking as confirmed
+      login = post(
+        '/login',
+        email: 'new_guest@email.com',
+        password: 'password'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      # The guest can see the booking as confirmed
+      expect(dashboard.body).to include('confirmed')
+      expect(dashboard.body).to include('2022-12-31')
+    end
+  end
+  
+  
 end
