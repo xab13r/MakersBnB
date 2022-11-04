@@ -200,4 +200,10 @@ class Application < Sinatra::Base
     return redirect('/dashboard')
   end
   
+  post '/confirm_booking/:id' do
+    repo = BookingRepository.new
+    repo.confirm_booking(params[:id])
+    return redirect('/dashboard')
+  end
+  
 end

@@ -519,7 +519,7 @@ describe Application do
     end
   end
   
-  describe 'POST /cancel_booking' do
+  describe 'POST /cancel_booking/:id' do
     it "changes the status of a confirmed booking to cancelled" do
       login = post(
         '/login',
@@ -541,11 +541,40 @@ describe Application do
         '/cancel_booking/5'
       )
       
+      expect(cancel.status).to eq 302
+      
       dashboard = get('/dashboard')
       
       new_space_name_count = dashboard.body.scan(space_name).length
       
       expect(new_space_name_count).to eq og_space_name_count - 1   
+    end
+  end
+  
+  describe "POST /confirm_booking/:id" do
+    it "changes the status from `pending` to `confirmed`" do
+      login = post(
+        '/login',
+        email: 'email_2@email.com',
+        password: 'strong password 1'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      og_pending_count = dashboard.body.scan('pending').length
+      
+      p og_pending_count
+      
+      confirm = post(
+        '/confirm_booking/3'
+      )
+
+      dashboard = get('/dashboard')       
+      
+      new_pending_count = dashboard.body.scan('pending').length
+      
+      expect(new_pending_count).to eq og_pending_count - 1
+      
     end
   end
 end
