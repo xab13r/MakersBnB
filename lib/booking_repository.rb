@@ -47,7 +47,7 @@ class BookingRepository
   end
   
   def find_active_listing(user_id)
-    sql_query = 'SELECT * FROM bookings WHERE listed_by = $1 AND (status <> \'cancelled\' OR status <> \'archived\');'
+    sql_query = 'SELECT * FROM bookings WHERE listed_by = $1 AND (status = \'pending\' OR status = \'confirmed\');'
     sql_params = [user_id]
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
     

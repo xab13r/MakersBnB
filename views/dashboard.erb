@@ -81,6 +81,22 @@
                   <% end %>
                   <td><%= listing.booked_from %></td>
                   <td><%= listing.status %></td>
+                  <td>
+                    <% if listing.status == 'confirmed' %>
+                      <form action="/cancel_booking/<%= listing.id%>" method="POST">
+                      <input type="submit" value='Cancel' />
+                      </form>
+                    <% elsif listing.status == 'pending' %>  
+                    <form action="/approve_booking" method="POST">
+                    <input type="submit" value='Approve' />
+                    </form>
+                    <form action="/cancel_booking/<%= listing.id%>" method="POST">
+                    <input type="submit" value='Cancel' />
+                    </form>
+                    <% else %>
+                    
+                    <% end %>
+                  </td>
                 </tr>
               <% end %>
             <% else %>

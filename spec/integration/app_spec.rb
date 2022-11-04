@@ -518,4 +518,34 @@ describe Application do
       end
     end
   end
+  
+  describe 'POST /cancel_booking' do
+    it "changes the status of a confirmed booking to cancelled" do
+      login = post(
+        '/login',
+        email: 'email_2@email.com',
+        password: 'strong password 1'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      space_name = '<td>this is a fancier space</td>'
+      
+      expect(dashboard.body).to include('<td>fancier space</td>')
+      expect(dashboard.body).to include('<td>this is a fancier space</td>')
+      expect(dashboard.body).to include('<td>2022-11-01</td>')
+      
+      og_space_name_count = dashboard.body.scan(space_name).length
+      
+      cancel = post(
+        '/cancel_booking/5'
+      )
+      
+      dashboard = get('/dashboard')
+      
+      new_space_name_count = dashboard.body.scan(space_name).length
+      
+      expect(new_space_name_count).to eq og_space_name_count - 1   
+    end
+  end
 end

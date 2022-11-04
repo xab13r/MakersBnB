@@ -193,4 +193,11 @@ class Application < Sinatra::Base
       return erb(:space_page)
     end
   end
+  
+  post '/cancel_booking/:id' do
+    repo = BookingRepository.new
+    repo.cancel_booking(params[:id])
+    return redirect('/dashboard')
+  end
+  
 end

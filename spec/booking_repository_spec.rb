@@ -115,14 +115,14 @@ RSpec.describe BookingRepository do
       
       listings = repo.find_active_listing(listed_by)
       
-      expect(listings.length).to eq 4
-      expect(listings.last.id).to eq 6
-      expect(listings.last.booked_by).to eq 3
+      expect(listings.length).to eq 3
+      expect(listings.last.id).to eq 5
+      expect(listings.last.booked_by).to eq 1
       expect(listings.last.space_id).to eq 2
       expect(listings.last.listed_by).to eq 2
-      expect(listings.last.booked_from).to eq Date.new(2022,11,2)
-      expect(listings.last.booked_to).to eq Date.new(2022,11,2)
-      expect(listings.last.status).to eq 'archived'
+      expect(listings.last.booked_from).to eq Date.new(2022,11,1)
+      expect(listings.last.booked_to).to eq Date.new(2022,11,1)
+      expect(listings.last.status).to eq 'confirmed'
     end
       
     it "returns false if there is no match" do
