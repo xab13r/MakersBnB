@@ -12,15 +12,14 @@ class BookingRepository
     booking.booked_from = Date.parse(record['booked_from'])
     booking.booked_to = Date.parse(record['booked_to'])
     booking.status = record['status']
-    return booking
+    booking
   end
 
   def all
     sql_query = 'SELECT * FROM bookings;'
     sql_params = []
     result_set = DatabaseConnection.exec_params(sql_query, sql_params)
-    bookings = result_set.map { |record| booking_from_record(record) }
-    return bookings
+    result_set.map { |record| booking_from_record(record) }
   end
 
   def find_booking(booking_id)
@@ -32,7 +31,7 @@ class BookingRepository
 
     return false if booking.empty?
 
-    return booking[0]
+    booking[0]
   end
 
   def find_active_booking(user_id)
@@ -44,7 +43,7 @@ class BookingRepository
 
     return false if bookings.empty?
 
-    return bookings
+    bookings
   end
 
   def find_active_listing(user_id)
@@ -56,7 +55,7 @@ class BookingRepository
 
     return false if listings.empty?
 
-    return listings
+    listings
   end
 
   def find_booking_for_space(space_id)
@@ -68,7 +67,7 @@ class BookingRepository
 
     return false if bookings.empty?
 
-    return bookings
+    bookings
   end
 
   def create_booking(booking)
@@ -134,6 +133,6 @@ class BookingRepository
 
     return false if past_bookings.empty?
 
-    return past_bookings
+    past_bookings
   end
 end

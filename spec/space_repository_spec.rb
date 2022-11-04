@@ -160,7 +160,7 @@ RSpec.describe SpaceRepository do
   end
 
   describe '#find_spaces_by_user' do
-    it "returns an array of all Space objects who have been requested" do
+    it 'returns an array of all Space objects who have been requested' do
       repo = SpaceRepository.new
 
       user_id = 1
@@ -171,7 +171,7 @@ RSpec.describe SpaceRepository do
       expect(spaces.last.id).to eq 5
     end
 
-    it "returns false if there is no match" do
+    it 'returns false if there is no match' do
       repo = SpaceRepository.new
 
       user_id = 4

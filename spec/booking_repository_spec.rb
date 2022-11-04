@@ -11,8 +11,8 @@ RSpec.describe BookingRepository do
     reset_tables
   end
 
-  describe "#booking_from_record" do
-    it "creates a Booking object from a SQL record" do
+  describe '#booking_from_record' do
+    it 'creates a Booking object from a SQL record' do
       record = {
         'id' => '1',
         'booked_by' => '1',
@@ -37,8 +37,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#all" do
-    it "returns an array with all Booking objects from the table" do
+  describe '#all' do
+    it 'returns an array with all Booking objects from the table' do
       repo = BookingRepository.new
       bookings = repo.all
 
@@ -53,8 +53,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#find_booking" do
-    it "returns a Booking object given its id" do
+  describe '#find_booking' do
+    it 'returns a Booking object given its id' do
       id_to_find = 1
       repo = BookingRepository.new
 
@@ -78,8 +78,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#find_active_booking" do
-    it "returns all future bookings for a user" do
+  describe '#find_active_booking' do
+    it 'returns all future bookings for a user' do
       booked_by = 1
 
       repo = BookingRepository.new
@@ -96,7 +96,7 @@ RSpec.describe BookingRepository do
       expect(bookings.last.status).to eq 'confirmed'
     end
 
-    it "returns false if there is no match" do
+    it 'returns false if there is no match' do
       booked_by = 5
 
       repo = BookingRepository.new
@@ -106,8 +106,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#find_active_listing" do
-    it "returns all active listing for a user" do
+  describe '#find_active_listing' do
+    it 'returns all active listing for a user' do
       listed_by = 2
 
       repo = BookingRepository.new
@@ -124,7 +124,7 @@ RSpec.describe BookingRepository do
       expect(listings.last.status).to eq 'confirmed'
     end
 
-    it "returns false if there is no match" do
+    it 'returns false if there is no match' do
       listed_by = 5
 
       repo = BookingRepository.new
@@ -134,8 +134,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#find_booking_for_space" do
-    it "returns an array of Booking objects given their space_id" do
+  describe '#find_booking_for_space' do
+    it 'returns an array of Booking objects given their space_id' do
       space_id = 2
 
       repo = BookingRepository.new
@@ -152,7 +152,7 @@ RSpec.describe BookingRepository do
       expect(bookings.last.status).to eq 'archived'
     end
 
-    it "return false if there is no match" do
+    it 'return false if there is no match' do
       space_id = 4
 
       repo = BookingRepository.new
@@ -162,8 +162,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#create_booking" do
-    it "adds a new booking to the bookings table" do
+  describe '#create_booking' do
+    it 'adds a new booking to the bookings table' do
       booking = Booking.new
       booking.booked_by = 5
       booking.space_id = 1
@@ -188,8 +188,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#cancel_booking" do
-    it "changes the status of a booking to cancelled" do
+  describe '#cancel_booking' do
+    it 'changes the status of a booking to cancelled' do
       booking_to_cancel = 3
       repo = BookingRepository.new
       booking = repo.find_booking(booking_to_cancel)
@@ -200,8 +200,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#validate_booking" do
-    it "returns true if the space is available for a given date" do
+  describe '#validate_booking' do
+    it 'returns true if the space is available for a given date' do
       booking = Booking.new
       booking.booked_by = 1
       booking.space_id = 2
@@ -214,7 +214,7 @@ RSpec.describe BookingRepository do
       expect(repo.validate_booking(booking)).to eq true
     end
 
-    it "return false if the space is not available for a given date" do
+    it 'return false if the space is not available for a given date' do
       booking = Booking.new
       booking.booked_by = 1
       booking.space_id = 3
@@ -228,8 +228,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#confirm_booking" do
-    it "changes the status of a booking to confirmed" do
+  describe '#confirm_booking' do
+    it 'changes the status of a booking to confirmed' do
       booking_to_confirm = 4
       repo = BookingRepository.new
       booking = repo.find_booking(booking_to_confirm)
@@ -240,8 +240,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#archive_past_bookings" do
-    it "changes the status of all past booking to `archived`" do
+  describe '#archive_past_bookings' do
+    it 'changes the status of all past booking to `archived`' do
       repo = BookingRepository.new
 
       repo.archive_past_bookings
@@ -255,8 +255,8 @@ RSpec.describe BookingRepository do
     end
   end
 
-  describe "#find_past_booking" do
-    it "returns all archived bookings for a given user" do
+  describe '#find_past_booking' do
+    it 'returns all archived bookings for a given user' do
       booked_by = 3
       repo = BookingRepository.new
       past_bookings = repo.find_past_booking(booked_by)
@@ -265,12 +265,12 @@ RSpec.describe BookingRepository do
       expect(past_bookings.first.booked_by).to eq 3
       expect(past_bookings.first.space_id).to eq 2
       expect(past_bookings.first.listed_by).to eq 2
-      expect(past_bookings.first.booked_from).to eq Date.new(2022, 11, 02)
-      expect(past_bookings.first.booked_to).to eq Date.new(2022, 11, 02)
+      expect(past_bookings.first.booked_from).to eq Date.new(2022, 11, 0o2)
+      expect(past_bookings.first.booked_to).to eq Date.new(2022, 11, 0o2)
       expect(past_bookings.first.status).to eq 'archived'
     end
 
-    it "returns false if there is no match" do
+    it 'returns false if there is no match' do
       booked_by = 2
 
       repo = BookingRepository.new
