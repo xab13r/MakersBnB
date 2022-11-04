@@ -336,7 +336,7 @@ describe Application do
         expect(response.body).to include('<a class="button button-primary" href="/logout">Logout</a>')
         expect(response.body).to include('<a class="button button-primary" href="/add_space">Add a Space</a>')
         expect(response.body).to include('Welcome, user 1')
-        expect(response.body).to include('<td>not so fancy space</td>')
+        expect(response.body).to include('not so fancy space</a>')
         expect(response.body).to include('<td>this is a not so fancy space</td>')
 
         expect(response.body).to include('<td>this is a fancy space</td>')
@@ -564,6 +564,45 @@ describe Application do
 
       expect(new_space_name_count).to eq og_space_name_count - 1
     end
+
+    it "changes the status of a booked trip to cancelled" do 
+        new_guest = post(
+            '/signup',
+            name: 'new guest',
+            email: 'new_guest@email.com',
+            password: 'password'
+          )
+    
+          login = post(
+            '/login',
+            email: 'new_guest@email.com',
+            password: 'password'
+          )
+    
+          new_booking = post(
+            '/spaces/6',
+            date: '31-12-2022',
+            status: 'pending'
+          )
+
+          dashboard = get('/dashboard')
+
+          og_pending_count = dashboard.body.scan('pending').length
+        
+        expect(og_pending_count).to eq 1
+
+        post (
+            '/cancel_booking/8'
+        )
+
+        dashboard = get('/dashboard')
+
+        expect(dashboard.body.scan('pending').length).to eq 0
+        expect(dashboard.body.scan('cancelled').length).to eq 1
+
+
+
+    end 
   end
 
   describe 'POST /confirm_booking/:id' do

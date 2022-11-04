@@ -34,14 +34,14 @@
               <th>Description</th>
               <th>Booked Date</th>
               <th>Status</th>
-              <th>View</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <% if @bookings %>
               <% @bookings.each do |booking| %>
                 <tr>
-                  <td><%= @space_repo.find_by_id(booking.space_id).name %></td>
+                  <td><a href="/spaces/<%= booking.space_id%>"><%= @space_repo.find_by_id(booking.space_id).name %></a></td>
                   
                   <% if @space_repo.find_by_id(booking.space_id).description.length > 30 %>
                   <td><%= @space_repo.find_by_id(booking.space_id).description[0,30] + '...' %></td>
@@ -51,7 +51,9 @@
                   
                   <td><%= booking.booked_from %></td>
                   <td><%= booking.status %></td>
-                  <td><a href="/spaces/<%= booking.space_id%>">View space</a></td>
+                  <td><form action="/cancel_booking/<%= booking.id%>" method="POST">
+                  <input type="submit" value='Cancel' />
+                  </form></td>
                 </tr>
               <% end %>
             <% else %>
